@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutters_of_hamelin/cubit/BottomNavigationCubit.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 
 class BottomNav extends StatefulWidget {
-
   const BottomNav({Key? key}) : super(key: key);
 
   @override
@@ -10,30 +10,56 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  final List<Widget> _screens = const [
-    Home(),
-    Search(),
-    Library(),
-  ];
+  late BottomNavBarCubit _bottomNavBarCubit;
 
-  int _currentIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    _bottomNavBarCubit = BottomNavBarCubit();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomNavBarCubit.close();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: _screens[_currentIndex],
+      body: StreamBuilder<NavBarItem>(
+        stream: _bottomNavBarCubit.itemStream,
+        initialData: _bottomNavBarCubit.defaultItem,
+        builder: (context, snapshot) {
+          switch (snapshot.data) {
+            case NavBarItem.HOME:
+              return const Home();
+            case NavBarItem.SEARCH:
+              return const Search();
+            case NavBarItem.LIBRARY:
+              return const Library();
+            default:
+              return const Home();
+          }
+        },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search),label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.library_music),label: 'Library'),
-        ],
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: _currentIndex,
-        onTap: (int index){setState((){_currentIndex = index;});}
+      bottomNavigationBar: StreamBuilder(
+        stream: _bottomNavBarCubit.itemStream,
+        initialData: _bottomNavBarCubit.defaultItem,
+        builder: (context, AsyncSnapshot<NavBarItem> snapshot) {
+          return BottomNavigationBar(
+            fixedColor: Colors.blueAccent,
+            currentIndex: snapshot.data!.index,
+            onTap: _bottomNavBarCubit.pickItem,
+            items: const [
+              BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
+              BottomNavigationBarItem(
+                  label: 'Search', icon: Icon(Icons.search)),
+              BottomNavigationBarItem(
+                  label: 'Library', icon: Icon(Icons.library_music)),
+            ],
+          );
+        },
       ),
     );
   }
