@@ -42,8 +42,9 @@ class _MainList extends StatefulWidget {
 }
 
 class _MainListState extends State<_MainList> {
-  final CarouselController _carouselController = CarouselController();
-  int _currentIndex = 0;
+  final CarouselController _titleCarouselController = CarouselController();
+  int _titleCurrentIndex = 1;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,143 +54,155 @@ class _MainListState extends State<_MainList> {
         children: [
           CarouselSlider(
             options: CarouselOptions(
-                initialPage: 1,
+                initialPage: _titleCurrentIndex,
                 onPageChanged: (index, reason) {
                   setState(() {
-                    _currentIndex = index;
+                    _titleCurrentIndex = index;
                   });
                 },
-                height: 100,
+                height: 50,
                 scrollDirection: Axis.horizontal,
                 viewportFraction: 0.3,
                 scrollPhysics: NeverScrollableScrollPhysics()),
-            carouselController: _carouselController,
+            carouselController: _titleCarouselController,
             items: [
               GestureDetector(
                 onTap: () {
-                  _carouselController.jumpToPage(0);
+                  _titleCarouselController.jumpToPage(0);
                 },
                 child: Text(
                   "Albums",
                   style: TextStyle(
-                      fontSize: _currentIndex == 0 ? 24 : 18,
-                      fontWeight: _currentIndex == 0
+                      fontSize: _titleCurrentIndex == 0 ? 24 : 18,
+                      fontWeight: _titleCurrentIndex == 0
                           ? FontWeight.w700
                           : FontWeight.w600),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  _carouselController.jumpToPage(1);
+                  _titleCarouselController.jumpToPage(1);
                 },
                 child: Text(
                   "Songs",
                   style: TextStyle(
-                      fontSize: _currentIndex == 1 ? 24 : 18,
-                      fontWeight: _currentIndex == 1
+                      fontSize: _titleCurrentIndex == 1 ? 24 : 18,
+                      fontWeight: _titleCurrentIndex == 1
                           ? FontWeight.w700
                           : FontWeight.w600),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  _carouselController.jumpToPage(2);
+                  _titleCarouselController.jumpToPage(2);
                 },
                 child: Text(
                   "Artists",
                   style: TextStyle(
-                      fontSize: _currentIndex == 2 ? 24 : 18,
-                      fontWeight: _currentIndex == 2
+                      fontSize: _titleCurrentIndex == 2 ? 24 : 18,
+                      fontWeight: _titleCurrentIndex == 2
                           ? FontWeight.w700
                           : FontWeight.w600),
                 ),
               ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: songList.length,
-                itemBuilder: (context, index) {
-                  return SizedBox(
-                    width: 185,
-                    height: 230,
-                    child: Card(
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
+          CarouselSlider(
+            options: CarouselOptions(
+              enlargeCenterPage: true,
+              height: 250,
+              viewportFraction: 0.5,
+            ),
+            items: songList
+                .map(
+                  (song) => Builder(
+                    builder: (context) {
+                      return SizedBox(
+                        // width: 185,
+                        // height: 230,
+                        child: Card(
+                          shape: const RoundedRectangleBorder(
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(16)),
-                              image: DecorationImage(
-                                  image: AssetImage(songList[index].img),
-                                  fit: BoxFit.cover),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 7,
-                            left: 5,
-                            right: 5,
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        white.withOpacity(0.2),
-                                        white.withOpacity(0.1)
-                                      ],
-                                      begin: AlignmentDirectional.topStart,
-                                      end: AlignmentDirectional.bottomEnd,
-                                    ),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            songList[index].name,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              color: white,
-                                            ),
-                                          ),
-                                          Text(
-                                            songList[index].artist,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      CircleAvatar(
-                                        radius: 16,
-                                      )
-                                    ],
-                                  ),
+                                  BorderRadius.all(Radius.circular(16))),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(16)),
+                                  image: DecorationImage(
+                                      image: AssetImage(song.img),
+                                      fit: BoxFit.cover),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+                              Positioned(
+                                bottom: 7,
+                                left: 5,
+                                right: 5,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8)),
+                                  child: BackdropFilter(
+                                    filter:
+                                        ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            white.withOpacity(0.2),
+                                            white.withOpacity(0.1)
+                                          ],
+                                          begin: AlignmentDirectional.topStart,
+                                          end: AlignmentDirectional.bottomEnd,
+                                        ),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8)),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                song.name,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: white,
+                                                ),
+                                              ),
+                                              Text(
+                                                song.artist,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const CircleAvatar(
+                                            radius: 16,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),
