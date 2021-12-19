@@ -24,8 +24,20 @@ class Home extends StatelessWidget {
           slivers: [
             SliverFillRemaining(
               child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _MainList(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: _SongList(
+                      title: 'Top Albums',
+                    ),
+                  ),
+                  // _SongList(
+                  //   title: 'Recommended Songs',
+                  //   isVertical: true,
+                  // ),
                 ],
               ),
             )
@@ -49,7 +61,7 @@ class _MainListState extends State<_MainList> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 500,
+      height: 300,
       child: Column(
         children: [
           CarouselSlider(
@@ -206,6 +218,73 @@ class _MainListState extends State<_MainList> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SongList extends StatelessWidget {
+  const _SongList({Key? key, required this.title, this.isVertical = false})
+      : super(key: key);
+  final String title;
+  final bool isVertical;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal:16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        isVertical
+            ? Expanded(
+                child: ListView.builder(
+                  itemCount: songList.length,
+                  itemBuilder: (context, index) => Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          image: DecorationImage(
+                            image: AssetImage(songList[index].img),
+                            fit: BoxFit.cover
+                          ),
+                        ),
+                      )
+                ),
+              )
+            : SizedBox(
+                height: 100,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: songList.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemBuilder: (context, index) => isVertical
+                        ? Container()
+                        : Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              image: DecorationImage(
+                                  image: AssetImage(songList[index].img),
+                                  fit: BoxFit.cover),
+                            ),
+                          )),
+              ),
+      ],
     );
   }
 }
