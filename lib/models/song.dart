@@ -2,8 +2,9 @@ import 'dart:convert';
 
 class Song {
   String img;
-  String Name;
-  String Description;
+  String name;
+  String description;
+  String artist;
   String uri;
   String isPlayable;
   String isLocal;
@@ -11,8 +12,9 @@ class Song {
   int popularity;
   Song({
     required this.img,
-    required this.Name,
-    required this.Description,
+    required this.name,
+    required this.description,
+    required this.artist,
     required this.uri,
     required this.isPlayable,
     required this.isLocal,
@@ -22,8 +24,9 @@ class Song {
 
   Song copyWith({
     String? img,
-    String? Name,
-    String? Description,
+    String? name,
+    String? description,
+    String? artist,
     String? uri,
     String? isPlayable,
     String? isLocal,
@@ -32,8 +35,9 @@ class Song {
   }) {
     return Song(
       img: img ?? this.img,
-      Name: Name ?? this.Name,
-      Description: Description ?? this.Description,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      artist: artist ?? this.artist,
       uri: uri ?? this.uri,
       isPlayable: isPlayable ?? this.isPlayable,
       isLocal: isLocal ?? this.isLocal,
@@ -45,8 +49,9 @@ class Song {
   Map<String, dynamic> toMap() {
     return {
       'img': img,
-      'Name': Name,
-      'Description': Description,
+      'name': name,
+      'description': description,
+      'artist': artist,
       'uri': uri,
       'isPlayable': isPlayable,
       'isLocal': isLocal,
@@ -58,8 +63,9 @@ class Song {
   factory Song.fromMap(Map<String, dynamic> map) {
     return Song(
       img: map['img'] ?? '',
-      Name: map['Name'] ?? '',
-      Description: map['Description'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      artist: map['artist'] ?? '',
       uri: map['uri'] ?? '',
       isPlayable: map['isPlayable'] ?? '',
       isLocal: map['isLocal'] ?? '',
@@ -74,7 +80,7 @@ class Song {
 
   @override
   String toString() {
-    return 'Song(img: $img, Name: $Name, Description: $Description, uri: $uri, isPlayable: $isPlayable, isLocal: $isLocal, track_number: $track_number, popularity: $popularity)';
+    return 'Song(img: $img, name: $name, description: $description, artist: $artist, uri: $uri, isPlayable: $isPlayable, isLocal: $isLocal, track_number: $track_number, popularity: $popularity)';
   }
 
   @override
@@ -83,8 +89,9 @@ class Song {
   
     return other is Song &&
       other.img == img &&
-      other.Name == Name &&
-      other.Description == Description &&
+      other.name == name &&
+      other.description == description &&
+      other.artist == artist &&
       other.uri == uri &&
       other.isPlayable == isPlayable &&
       other.isLocal == isLocal &&
@@ -95,8 +102,9 @@ class Song {
   @override
   int get hashCode {
     return img.hashCode ^
-      Name.hashCode ^
-      Description.hashCode ^
+      name.hashCode ^
+      description.hashCode ^
+      artist.hashCode ^
       uri.hashCode ^
       isPlayable.hashCode ^
       isLocal.hashCode ^

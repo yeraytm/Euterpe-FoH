@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
             SliverFillRemaining(
               child: Column(
                 children: [
-                  MainList(),
+                  _MainList(),
                 ],
               ),
             )
@@ -34,70 +34,162 @@ class Home extends StatelessWidget {
   }
 }
 
-class MainList extends StatefulWidget {
-  MainList({Key? key}) : super(key: key);
+class _MainList extends StatefulWidget {
+  _MainList({Key? key}) : super(key: key);
 
   @override
-  State<MainList> createState() => _MainListState();
+  State<_MainList> createState() => _MainListState();
 }
 
-class _MainListState extends State<MainList> {
+class _MainListState extends State<_MainList> {
   final CarouselController _carouselController = CarouselController();
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 100,
-      child: CarouselSlider(
-        options: CarouselOptions(
-            initialPage: 1,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            height: 100,
-            scrollDirection: Axis.horizontal,
-            viewportFraction: 0.3,
-            scrollPhysics: NeverScrollableScrollPhysics()),
-        carouselController: _carouselController,
-        items: [
-          GestureDetector(
-            onTap: () {
-              _carouselController.jumpToPage(0);
-            },
-            child: Text(
-              "Albums",
-              style: TextStyle(
-                  fontSize: _currentIndex == 0 ? 24 : 18,
-                  fontWeight:
-                      _currentIndex == 0 ? FontWeight.w700 : FontWeight.w600),
-            ),
+      height: 500,
+      child: Column(
+        children: [
+          CarouselSlider(
+            options: CarouselOptions(
+                initialPage: 1,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                height: 100,
+                scrollDirection: Axis.horizontal,
+                viewportFraction: 0.3,
+                scrollPhysics: NeverScrollableScrollPhysics()),
+            carouselController: _carouselController,
+            items: [
+              GestureDetector(
+                onTap: () {
+                  _carouselController.jumpToPage(0);
+                },
+                child: Text(
+                  "Albums",
+                  style: TextStyle(
+                      fontSize: _currentIndex == 0 ? 24 : 18,
+                      fontWeight: _currentIndex == 0
+                          ? FontWeight.w700
+                          : FontWeight.w600),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  _carouselController.jumpToPage(1);
+                },
+                child: Text(
+                  "Songs",
+                  style: TextStyle(
+                      fontSize: _currentIndex == 1 ? 24 : 18,
+                      fontWeight: _currentIndex == 1
+                          ? FontWeight.w700
+                          : FontWeight.w600),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  _carouselController.jumpToPage(2);
+                },
+                child: Text(
+                  "Artists",
+                  style: TextStyle(
+                      fontSize: _currentIndex == 2 ? 24 : 18,
+                      fontWeight: _currentIndex == 2
+                          ? FontWeight.w700
+                          : FontWeight.w600),
+                ),
+              ),
+            ],
           ),
-          GestureDetector(
-            onTap: () {
-              _carouselController.jumpToPage(1);
-            },
-            child: Text(
-              "Songs",
-              style: TextStyle(
-                  fontSize: _currentIndex == 1 ? 24 : 18,
-                  fontWeight:
-                      _currentIndex == 1 ? FontWeight.w700 : FontWeight.w600),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              _carouselController.jumpToPage(2);
-            },
-            child: Text(
-              "Artists",
-              style: TextStyle(
-                  fontSize: _currentIndex == 2 ? 24 : 18,
-                  fontWeight:
-                      _currentIndex == 2 ? FontWeight.w700 : FontWeight.w600),
-            ),
+          Expanded(
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: songList.length,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    width: 185,
+                    height: 230,
+                    child: Card(
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              image: DecorationImage(
+                                  image: AssetImage(songList[index].img),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 7,
+                            left: 5,
+                            right: 5,
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        white.withOpacity(0.2),
+                                        white.withOpacity(0.1)
+                                      ],
+                                      begin: AlignmentDirectional.topStart,
+                                      end: AlignmentDirectional.bottomEnd,
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            songList[index].name,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: white,
+                                            ),
+                                          ),
+                                          Text(
+                                            songList[index].artist,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      CircleAvatar(
+                                        radius: 16,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }),
           ),
         ],
       ),
