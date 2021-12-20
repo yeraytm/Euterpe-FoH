@@ -48,15 +48,15 @@ class _BottomNavState extends State<BottomNav> {
         initialData: _bottomNavBarCubit.defaultItem,
         builder: (context, AsyncSnapshot<NavBarItem> snapshot) {
           return BottomNavigationBar(
-            fixedColor: Colors.blueAccent,
+            fixedColor: Colors.black,
             currentIndex: snapshot.data!.index,
             onTap: _bottomNavBarCubit.pickItem,
             items: const [
-              BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
+              BottomNavigationBarItem(label: 'Home', activeIcon: Icon(Icons.home), icon: Icon(Icons.home_outlined)),
               BottomNavigationBarItem(
-                  label: 'Search', icon: Icon(Icons.search)),
+                  label: 'Search',activeIcon: Icon(Icons.explore), icon: Icon(Icons.explore_outlined)),
               BottomNavigationBarItem(
-                  label: 'Library', icon: Icon(Icons.library_music)),
+                  label: 'Library',activeIcon: Icon(Icons.library_music) ,icon: Icon(Icons.library_music_outlined)),
             ],
           );
         },
