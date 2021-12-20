@@ -225,6 +225,7 @@ class _MainListState extends State<_MainList> {
                                           ),
                                           const CircleAvatar(
                                             radius: 16,
+                                            child: Icon(Icons.play_arrow),
                                           )
                                         ],
                                       ),
