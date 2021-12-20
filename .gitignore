@@ -48,6 +48,6 @@ app.*.map.json
 # Google Services
 android/app/google-services.json
 
-windows/flutter/generated_plugins.cmake
-windows/flutter/generated_plugin_registrant.h
-windows/flutter/generated_plugin_registrant.cc
+generated_plugins.cmake
+generated_plugin_registrant.h
+generated_plugin_registrant.cc
