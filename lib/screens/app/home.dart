@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
     super.initState();
     _homeScrollController = ScrollController()
       ..addListener(() {
-        context.read<AppBarCubit>().setOffset(_homeScrollController.offset);
+        //context.read<AppBarCubit>().setOffset(_homeScrollController.offset);
       });
   }
 
@@ -44,12 +44,11 @@ class _HomeState extends State<Home> {
         centerTitle: true,
       ),
       body: CustomScrollView(
-        controller: _homeScrollController,
+        // controller: _homeScrollController,
         slivers: [
           SliverToBoxAdapter(
             child: _MainList(),
           ),
-
           const SliverPadding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             sliver: SliverToBoxAdapter(
@@ -58,7 +57,6 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-
           const SliverPadding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             sliver: SliverToBoxAdapter(
@@ -274,19 +272,19 @@ class _SongList extends StatelessWidget {
         SizedBox(
           height: 100,
           child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: songList.length,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemBuilder: (context, index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      image: DecorationImage(
-                          image: AssetImage(songList[index].img),
-                          fit: BoxFit.cover),
-                    ),
-                  )),
+            scrollDirection: Axis.horizontal,
+            itemCount: songList.length,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            itemBuilder: (context, index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              width: 100,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                image: DecorationImage(
+                    image: AssetImage(songList[index].img), fit: BoxFit.cover),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -316,17 +314,55 @@ class _MultipleTracksList extends StatelessWidget {
           height: 8,
         ),
         SizedBox(
-          height: 400,
+          height: 232,
           child: GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             scrollDirection: Axis.horizontal,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 3 / 2,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1 / 5,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20),
             itemCount: songList.length,
             itemBuilder: (context, index) {
-              return Text(songList[index].name);
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        width: 64,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          image: DecorationImage(
+                            image: AssetImage(songList[index].img),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            songList[index].name,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            songList[index].artist,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Icon(Icons.favorite_outline),
+                ],
+              );
             },
           ),
         ),
