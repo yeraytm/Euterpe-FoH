@@ -12,5 +12,12 @@ class Assets{
   static const String justinBieberCover = '$mockAssetsDir/justin_biever_cover.jpg';
   static const String duaLipaCover = '$mockAssetsDir/dua_lipa_cover.jpg';
   static const String harryStylesCover = '$mockAssetsDir/harry_styles_cover.png';
+  static const String edSheeranCover = '$mockAssetsDir/ed_sheeran_cover.jpg';
+  static const String imagineDragonsCover = '$mockAssetsDir/imagineDragonsCover.jpg';
+  static const String pelDeGallCover = '$mockAssetsDir/pel_de_gall_cover.jpg';
+  static const String jonasBrothersCover = '$mockAssetsDir/jonas_brothers_cover.jpg';
+  static const String maneskinCover = '$mockAssetsDir/manesking_cover.jpg';
+  static const String camilaCabelloCover = '$mockAssetsDir/camila_cabello_cover.jpg';
+
   static const String euterpeLogo = '$assetsDir/euterpe_logo.png';
 }

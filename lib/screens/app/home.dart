@@ -11,38 +11,40 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Image.asset(
-            Assets.euterpeLogo,
-            scale: 1.25,
-          ),
-          centerTitle: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Image.asset(
+          Assets.euterpeLogo,
+          scale: 1.25,
         ),
-        body: CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _MainList(),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: _SongList(
-                      title: 'Top Albums',
-                    ),
+        centerTitle: true,
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _MainList(),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: _SongList(
+                    title: 'Top Albums',
                   ),
-                  // _SongList(
-                  //   title: 'Recommended Songs',
-                  //   isVertical: true,
-                  // ),
-                ],
-              ),
-            )
-          ],
-        ));
+                ),
+                // _SongList(
+                //   title: 'Recommended Songs',
+                //   isVertical: true,
+                // ),
+                
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -230,12 +232,12 @@ class _SongList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal:16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             title,
             style: const TextStyle(
@@ -244,25 +246,25 @@ class _SongList extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         isVertical
             ? Expanded(
                 child: ListView.builder(
-                  itemCount: songList.length,
-                  itemBuilder: (context, index) => Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(8)),
-                          image: DecorationImage(
-                            image: AssetImage(songList[index].img),
-                            fit: BoxFit.cover
+                  
+                    itemCount: songList.length,
+                    itemBuilder: (context, index) => Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            image: DecorationImage(
+                                image: AssetImage(songList[index].img),
+                                fit: BoxFit.cover),
                           ),
-                        ),
-                      )
-                ),
+                        )),
               )
             : SizedBox(
                 height: 100,
