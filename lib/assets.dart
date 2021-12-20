@@ -1,7 +1,8 @@
 class Assets{
-  //main directories
+  //Main directories
   static const String assetsDir = 'assets';
   static const String mockAssetsDir = '$assetsDir/mock';
+  
   //Assets
   static const String dojaCatCover = '$mockAssetsDir/doja_cat_cover.jpg';
   static const String arcaneCover = '$mockAssetsDir/arcane_cover.jpg';
@@ -18,6 +19,9 @@ class Assets{
   static const String jonasBrothersCover = '$mockAssetsDir/jonas_brothers_cover.jpg';
   static const String maneskinCover = '$mockAssetsDir/maneskin_cover.jpg';
   static const String camilaCabelloCover = '$mockAssetsDir/camila_cabello_cover.jpg';
+
+  static const String avatar = '$mockAssetsDir/avatar.jpg';
+  static const String banner = '$mockAssetsDir/banner.jpg';
 
   static const String euterpeLogo = '$assetsDir/euterpe_logo.png';
 }
