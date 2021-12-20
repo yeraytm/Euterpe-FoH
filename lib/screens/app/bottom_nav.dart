@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutters_of_hamelin/cubit/BottomNavigationCubit.dart';
+import 'package:flutters_of_hamelin/cubit/cubits.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 
 class BottomNav extends StatefulWidget {

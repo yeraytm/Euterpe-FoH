@@ -2,11 +2,34 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/colors.dart';
+import 'package:flutters_of_hamelin/cubit/cubits.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 import 'dart:ui';
+import 'package:provider/src/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late ScrollController _homeScrollController;
+  @override
+  void initState() {
+    super.initState();
+    _homeScrollController = ScrollController()
+      ..addListener(() {
+        context.read<AppBarCubit>().setOffset(_homeScrollController.offset);
+      });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _homeScrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,27 +44,29 @@ class Home extends StatelessWidget {
         centerTitle: true,
       ),
       body: CustomScrollView(
+        controller: _homeScrollController,
         slivers: [
-          SliverFillRemaining(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _MainList(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: _SongList(
-                    title: 'Top Albums',
-                  ),
-                ),
-                // _SongList(
-                //   title: 'Recommended Songs',
-                //   isVertical: true,
-                // ),
-                
-              ],
+          SliverToBoxAdapter(
+            child: _MainList(),
+          ),
+
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            sliver: SliverToBoxAdapter(
+              child: _SongList(
+                title: 'Top Albums',
+              ),
             ),
-          )
+          ),
+
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            sliver: SliverToBoxAdapter(
+              child: _MultipleTracksList(
+                title: 'Fast Play',
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -225,14 +250,11 @@ class _MainListState extends State<_MainList> {
 }
 
 class _SongList extends StatelessWidget {
-  const _SongList({Key? key, required this.title, this.isVertical = false})
-      : super(key: key);
+  const _SongList({Key? key, required this.title}) : super(key: key);
   final String title;
-  final bool isVertical;
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -249,43 +271,65 @@ class _SongList extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        isVertical
-            ? Expanded(
-                child: ListView.builder(
-                  
-                    itemCount: songList.length,
-                    itemBuilder: (context, index) => Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            image: DecorationImage(
-                                image: AssetImage(songList[index].img),
-                                fit: BoxFit.cover),
-                          ),
-                        )),
-              )
-            : SizedBox(
-                height: 100,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: songList.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    itemBuilder: (context, index) => isVertical
-                        ? Container()
-                        : Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
-                              image: DecorationImage(
-                                  image: AssetImage(songList[index].img),
-                                  fit: BoxFit.cover),
-                            ),
-                          )),
-              ),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: songList.length,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              itemBuilder: (context, index) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      image: DecorationImage(
+                          image: AssetImage(songList[index].img),
+                          fit: BoxFit.cover),
+                    ),
+                  )),
+        ),
+      ],
+    );
+  }
+}
+
+class _MultipleTracksList extends StatelessWidget {
+  const _MultipleTracksList({Key? key, required this.title}) : super(key: key);
+  final title;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          height: 400,
+          child: GridView.builder(
+            scrollDirection: Axis.horizontal,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 3 / 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20),
+            itemCount: songList.length,
+            itemBuilder: (context, index) {
+              return Text(songList[index].name);
+            },
+          ),
+        ),
       ],
     );
   }
