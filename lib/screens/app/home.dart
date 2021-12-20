@@ -4,6 +4,7 @@ import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/colors.dart';
 import 'package:flutters_of_hamelin/cubit/cubits.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'package:provider/src/provider.dart';
 
@@ -72,7 +73,7 @@ class _HomeState extends State<Home> {
 }
 
 class _MainList extends StatefulWidget {
-  _MainList({Key? key}) : super(key: key);
+  const _MainList({Key? key}) : super(key: key);
 
   @override
   State<_MainList> createState() => _MainListState();
@@ -110,6 +111,7 @@ class _MainListState extends State<_MainList> {
                 child: Text(
                   "Albums",
                   style: TextStyle(
+                      fontFamily: GoogleFonts.nunito().fontFamily,
                       fontSize: _titleCurrentIndex == 0 ? 24 : 18,
                       fontWeight: _titleCurrentIndex == 0
                           ? FontWeight.w700
@@ -123,6 +125,7 @@ class _MainListState extends State<_MainList> {
                 child: Text(
                   "Songs",
                   style: TextStyle(
+                      fontFamily: GoogleFonts.nunito().fontFamily,
                       fontSize: _titleCurrentIndex == 1 ? 24 : 18,
                       fontWeight: _titleCurrentIndex == 1
                           ? FontWeight.w700
@@ -136,6 +139,7 @@ class _MainListState extends State<_MainList> {
                 child: Text(
                   "Artists",
                   style: TextStyle(
+                      fontFamily: GoogleFonts.nunito().fontFamily,
                       fontSize: _titleCurrentIndex == 2 ? 24 : 18,
                       fontWeight: _titleCurrentIndex == 2
                           ? FontWeight.w700
@@ -174,8 +178,8 @@ class _MainListState extends State<_MainList> {
                               ),
                               Positioned(
                                 bottom: 7,
-                                left: 5,
-                                right: 5,
+                                left: 7,
+                                right: 7,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(8)),
@@ -204,15 +208,18 @@ class _MainListState extends State<_MainList> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             children: [
                                               Text(
                                                 song.name,
                                                 style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
                                                   color: white,
                                                 ),
+                                              ),
+                                              const SizedBox(
+                                                height: 4.0,
                                               ),
                                               Text(
                                                 song.artist,
@@ -223,10 +230,6 @@ class _MainListState extends State<_MainList> {
                                               ),
                                             ],
                                           ),
-                                          const CircleAvatar(
-                                            radius: 16,
-                                            child: Icon(Icons.play_arrow),
-                                          )
                                         ],
                                       ),
                                     ),
