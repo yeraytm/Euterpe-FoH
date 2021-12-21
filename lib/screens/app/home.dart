@@ -4,6 +4,7 @@ import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/colors.dart';
 import 'package:flutters_of_hamelin/cubit/cubits.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
+import 'package:flutters_of_hamelin/screens/screens.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'package:provider/src/provider.dart';
@@ -44,13 +45,13 @@ class _HomeState extends State<Home> {
         ),
         centerTitle: true,
       ),
-      body: CustomScrollView(
+      body: const CustomScrollView(
         // controller: _homeScrollController,
         slivers: [
           SliverToBoxAdapter(
             child: _MainList(),
           ),
-          const SliverPadding(
+          SliverPadding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             sliver: SliverToBoxAdapter(
               child: _SongList(
@@ -58,7 +59,7 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          const SliverPadding(
+          SliverPadding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             sliver: SliverToBoxAdapter(
               child: _MultipleTracksList(
@@ -158,9 +159,12 @@ class _MainListState extends State<_MainList> {
                 .map(
                   (song) => Builder(
                     builder: (context) {
-                      return SizedBox(
-                        // width: 185,
-                        // height: 230,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  MusicPlayerScreen(song: song)));
+                        },
                         child: Card(
                           shape: const RoundedRectangleBorder(
                               borderRadius:
@@ -329,43 +333,50 @@ class _MultipleTracksList extends StatelessWidget {
                 mainAxisSpacing: 20),
             itemCount: songList.length,
             itemBuilder: (context, index) {
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                        width: 64,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
-                          image: DecorationImage(
-                            image: AssetImage(songList[index].img),
-                            fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MusicPlayerScreen(song: songList[index])));
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                          width: 64,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            image: DecorationImage(
+                              image: AssetImage(songList[index].img),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            songList[index].name,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            songList[index].artist,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Icon(Icons.favorite_outline),
-                ],
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              songList[index].name,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              songList[index].artist,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Icon(Icons.favorite_outline),
+                  ],
+                ),
               );
             },
           ),
