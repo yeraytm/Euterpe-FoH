@@ -16,7 +16,7 @@ class Euterpe extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: GoogleFonts.notoSans().fontFamily),
-      home: const BottomNav(),
+      home: LoginScreen(),
     );
   }
 }
