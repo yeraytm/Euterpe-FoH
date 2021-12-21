@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 
+import 'music_player.dart';
+
 class Library extends StatelessWidget {
   const Library({Key? key}) : super(key: key);
 
@@ -76,6 +78,7 @@ class Library extends StatelessWidget {
           const _ArtistList(title: 'Artists'),
           const SizedBox(height: 15),
           const _GenreList(title: 'Genres'),
+          const _PlaylistList(title: 'My Playlists'),
         ],
       ),
     );
@@ -198,6 +201,93 @@ class _GenreList extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PlaylistList extends StatelessWidget {
+  const _PlaylistList({Key? key, required this.title}) : super(key: key);
+  final title;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          height: 232,
+          child: GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            scrollDirection: Axis.horizontal,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1 / 5,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20),
+            itemCount: songList.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MusicPlayerScreen(song: songList[index])));
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                          width: 64,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            image: DecorationImage(
+                              image: AssetImage(songList[index].img),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "Playlist Name",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              "Duration",
+                              style:
+                                  TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Icon(Icons.favorite_outline),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ],
