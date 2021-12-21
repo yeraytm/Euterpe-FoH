@@ -29,15 +29,20 @@ environment:
 dependencies:
   bloc: ^8.0.1
   carousel_slider: ^4.0.0
-  cloud_firestore: ^3.1.5
   cupertino_icons: ^1.0.2
-  firebase_core: ^1.10.6
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.0
   google_fonts: ^2.1.0
   material_floating_search_bar: ^0.3.6
   palette_generator: ^0.3.2
+  # Firebase Dependencies
+  firebase_core: ^1.10.6
+  cloud_firestore: ^3.1.5
+  firebase_auth: ^3.3.4
+  firebase_storage: ^10.2.4
+  flutter_dotenv: ^5.0.2
+  flutterfire_ui: ^0.3.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0
