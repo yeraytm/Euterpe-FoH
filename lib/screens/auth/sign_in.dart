@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -28,6 +30,7 @@ class _CustomEmailSignInFormState extends State<CustomEmailSignInForm> {
   final fullnameCtrl = TextEditingController();
   final usernameCtrl = TextEditingController();
   AuthAction _action = AuthAction.signIn;
+  final db = FirebaseFirestore.instance;
   @override
   void dispose() {
     emailCtrl.dispose();
@@ -41,6 +44,20 @@ class _CustomEmailSignInFormState extends State<CustomEmailSignInForm> {
   Widget build(BuildContext context) {
     return AuthFlowBuilder<EmailFlowController>(
         action: _action,
+        listener: (oldState, newState, controller) {
+          if (newState is SigningIn) {
+            final auth = FirebaseAuth.instance;
+            if (_action == AuthAction.signUp && auth.currentUser != null) {
+              db.collection('Artists').doc(auth.currentUser!.uid).set({
+                "email": emailCtrl.text,
+                "fullname": fullnameCtrl.text,
+                "username": usernameCtrl.text,
+                "profileImg": "",
+                "bio": ""
+              });
+            }
+          }
+        },
         builder: (context, state, controller, _) {
           if (state is AwaitingEmailAndPassword) {
             return Column(
