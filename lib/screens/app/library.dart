@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 
@@ -19,6 +20,15 @@ class Library extends StatelessWidget {
       color: Colors.white,
     );
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              icon: Icon(Icons.person_off)),
+        ],
+      ),
       body: ListView(
         children: [
           Container(
@@ -245,7 +255,8 @@ class _PlaylistList extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MusicPlayerScreen(song: songList[index])));
+                      builder: (context) =>
+                          MusicPlayerScreen(song: songList[index])));
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -276,8 +287,7 @@ class _PlaylistList extends StatelessWidget {
                             ),
                             Text(
                               "Duration",
-                              style:
-                                  TextStyle(fontWeight: FontWeight.w600),
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
