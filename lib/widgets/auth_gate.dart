@@ -14,7 +14,8 @@ class AuthGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (!snapshot.hasData) {
-          return const CustomSignInScreen();
+          
+          return  CustomSignInScreen();
         }
         return app;
       },
