@@ -14,8 +14,10 @@ class Euterpe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthGate(
-      app: BottomNav(),
+    return const MaterialApp(
+      home: AuthGate(
+        app: BottomNav(),
+      ),
     );
   }
 }
