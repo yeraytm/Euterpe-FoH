@@ -14,15 +14,6 @@ class Library extends StatelessWidget {
   final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
-    TextStyle follStyle = const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    );
-    TextStyle numStyle = const TextStyle(
-      fontSize: 14,
-      color: Colors.white,
-    );
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -30,7 +21,7 @@ class Library extends StatelessWidget {
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              icon: Icon(Icons.person_off)),
+              icon: const Icon(Icons.person_off)),
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
@@ -39,77 +30,89 @@ class Library extends StatelessWidget {
             if (snapshot.hasData) {
               Artist artist = Artist.fromJson(snapshot.data!.data() as Map);
               print(snapshot.data);
-              return ListView(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(profile.banner),
-                            fit: BoxFit.fitHeight)),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 50),
-                        Text(
-                          artist.username,
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        const SizedBox(height: 25),
-                        CircleAvatar(
-                          backgroundImage: AssetImage(profile.avatar),
-                          radius: 50,
-                        ),
-                        const SizedBox(height: 25),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "Followers",
-                                  style: follStyle,
-                                ),
-                                Text(
-                                  '${profile.followers}',
-                                  style: numStyle,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  "Following",
-                                  style: follStyle,
-                                ),
-                                Text(
-                                  '${profile.following}',
-                                  style: numStyle,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 25),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  const _ArtistList(title: 'Artists'),
-                  const SizedBox(height: 15),
-                  const _GenreList(title: 'Genres'),
-                  const _PlaylistList(title: 'My Playlists'),
-                ],
-              );
+              return _buildScreen(artist);
             } else {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
           }),
     );
   }
+}
+
+Widget _buildScreen(Artist artist) {
+  TextStyle follStyle = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+  TextStyle numStyle = const TextStyle(
+    fontSize: 14,
+    color: Colors.white,
+  );
+  return ListView(
+    children: [
+      Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(profile.banner), fit: BoxFit.fitHeight)),
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            Text(
+              artist.username,
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            const SizedBox(height: 25),
+            CircleAvatar(
+              backgroundImage: AssetImage(profile.avatar),
+              radius: 50,
+            ),
+            const SizedBox(height: 25),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      "Followers",
+                      style: follStyle,
+                    ),
+                    Text(
+                      '${profile.followers}',
+                      style: numStyle,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "Following",
+                      style: follStyle,
+                    ),
+                    Text(
+                      '${profile.following}',
+                      style: numStyle,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 25),
+          ],
+        ),
+      ),
+      const SizedBox(height: 15),
+      const _ArtistList(title: 'Artists'),
+      const SizedBox(height: 15),
+      const _GenreList(title: 'Genres'),
+      const _PlaylistList(title: 'My Playlists'),
+    ],
+  );
 }
 
 class _ArtistList extends StatelessWidget {
