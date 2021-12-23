@@ -39,7 +39,9 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
               fontFamily: GoogleFonts.nunito().fontFamily, fontSize: 16),
         ),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz))],
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,11 +67,11 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             SongImageCircle(imgUri: widget.song.img),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Row(

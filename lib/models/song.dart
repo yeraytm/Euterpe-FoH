@@ -8,7 +8,7 @@ class Song {
   String uri;
   String isPlayable;
   String isLocal;
-  int track_number;
+  int trackNumber;
   int popularity;
   Song({
     required this.img,
@@ -18,7 +18,7 @@ class Song {
     required this.uri,
     required this.isPlayable,
     required this.isLocal,
-    required this.track_number,
+    required this.trackNumber,
     required this.popularity,
   });
 
@@ -30,7 +30,7 @@ class Song {
     String? uri,
     String? isPlayable,
     String? isLocal,
-    int? track_number,
+    int? trackNumber,
     int? popularity,
   }) {
     return Song(
@@ -41,7 +41,7 @@ class Song {
       uri: uri ?? this.uri,
       isPlayable: isPlayable ?? this.isPlayable,
       isLocal: isLocal ?? this.isLocal,
-      track_number: track_number ?? this.track_number,
+      trackNumber: trackNumber ?? this.trackNumber,
       popularity: popularity ?? this.popularity,
     );
   }
@@ -55,7 +55,7 @@ class Song {
       'uri': uri,
       'isPlayable': isPlayable,
       'isLocal': isLocal,
-      'track_number': track_number,
+      'track_number': trackNumber,
       'popularity': popularity,
     };
   }
@@ -69,7 +69,7 @@ class Song {
       uri: map['uri'] ?? '',
       isPlayable: map['isPlayable'] ?? '',
       isLocal: map['isLocal'] ?? '',
-      track_number: map['track_number']?.toInt() ?? 0,
+      trackNumber: map['track_number']?.toInt() ?? 0,
       popularity: map['popularity']?.toInt() ?? 0,
     );
   }
@@ -80,7 +80,7 @@ class Song {
 
   @override
   String toString() {
-    return 'Song(img: $img, name: $name, description: $description, artist: $artist, uri: $uri, isPlayable: $isPlayable, isLocal: $isLocal, track_number: $track_number, popularity: $popularity)';
+    return 'Song(img: $img, name: $name, description: $description, artist: $artist, uri: $uri, isPlayable: $isPlayable, isLocal: $isLocal, track_number: $trackNumber, popularity: $popularity)';
   }
 
   @override
@@ -95,7 +95,7 @@ class Song {
       other.uri == uri &&
       other.isPlayable == isPlayable &&
       other.isLocal == isLocal &&
-      other.track_number == track_number &&
+      other.trackNumber == trackNumber &&
       other.popularity == popularity;
   }
 
@@ -108,7 +108,7 @@ class Song {
       uri.hashCode ^
       isPlayable.hashCode ^
       isLocal.hashCode ^
-      track_number.hashCode ^
+      trackNumber.hashCode ^
       popularity.hashCode;
   }
 }

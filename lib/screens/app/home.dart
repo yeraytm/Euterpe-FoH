@@ -2,12 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/colors.dart';
-import 'package:flutters_of_hamelin/cubit/cubits.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
-import 'package:provider/src/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -86,7 +84,7 @@ class _MainListState extends State<_MainList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 300,
       child: Column(
@@ -102,7 +100,7 @@ class _MainListState extends State<_MainList> {
                 height: 50,
                 scrollDirection: Axis.horizontal,
                 viewportFraction: 0.3,
-                scrollPhysics: NeverScrollableScrollPhysics()),
+                scrollPhysics: const NeverScrollableScrollPhysics()),
             carouselController: _titleCarouselController,
             items: [
               GestureDetector(
@@ -112,7 +110,6 @@ class _MainListState extends State<_MainList> {
                 child: Text(
                   "Albums",
                   style: TextStyle(
-                      fontFamily: GoogleFonts.nunito().fontFamily,
                       fontSize: _titleCurrentIndex == 0 ? 24 : 18,
                       fontWeight: _titleCurrentIndex == 0
                           ? FontWeight.w700
@@ -301,7 +298,7 @@ class _SongList extends StatelessWidget {
 
 class _MultipleTracksList extends StatelessWidget {
   const _MultipleTracksList({Key? key, required this.title}) : super(key: key);
-  final title;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -336,7 +333,8 @@ class _MultipleTracksList extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => MusicPlayerScreen(song: songList[index])));
+                      builder: (context) =>
+                          MusicPlayerScreen(song: songList[index])));
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

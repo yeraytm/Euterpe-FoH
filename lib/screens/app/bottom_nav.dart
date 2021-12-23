@@ -32,11 +32,11 @@ class _BottomNavState extends State<BottomNav> {
         initialData: _bottomNavBarCubit.defaultItem,
         builder: (context, snapshot) {
           switch (snapshot.data) {
-            case NavBarItem.HOME:
+            case NavBarItem.home:
               return const Home();
-            case NavBarItem.SEARCH:
+            case NavBarItem.search:
               return const Search();
-            case NavBarItem.LIBRARY:
+            case NavBarItem.library:
               return Library();
             default:
               return const Home();

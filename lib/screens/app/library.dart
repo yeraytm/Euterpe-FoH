@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,6 @@ class Library extends StatelessWidget {
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
               Artist artist = Artist.fromJson(snapshot.data!.data() as Map);
-              print(snapshot.data);
               return _buildScreen(artist);
             } else {
               return const Center(
@@ -240,7 +238,7 @@ class _GenreList extends StatelessWidget {
 
 class _PlaylistList extends StatelessWidget {
   const _PlaylistList({Key? key, required this.title}) : super(key: key);
-  final title;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Column(

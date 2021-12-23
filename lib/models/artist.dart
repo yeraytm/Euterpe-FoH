@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Artist {
   String email;
   String fullname;
@@ -32,7 +30,7 @@ class Artist {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<dynamic, dynamic> toMap() {
     return {
       'email': email,
       'fullname': fullname,
