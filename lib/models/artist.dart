@@ -1,14 +1,14 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Artist {
-  String uuid;
   String email;
   String fullname;
   String username;
   String profileImg;
   String bio;
   Artist({
-    required this.uuid,
     required this.email,
     required this.fullname,
     required this.username,
@@ -17,7 +17,6 @@ class Artist {
   });
 
   Artist copyWith({
-    String? uuid,
     String? email,
     String? fullname,
     String? username,
@@ -25,7 +24,6 @@ class Artist {
     String? bio,
   }) {
     return Artist(
-      uuid: uuid ?? this.uuid,
       email: email ?? this.email,
       fullname: fullname ?? this.fullname,
       username: username ?? this.username,
@@ -36,7 +34,6 @@ class Artist {
 
   Map<String, dynamic> toMap() {
     return {
-      'uuid': uuid,
       'email': email,
       'fullname': fullname,
       'username': username,
@@ -45,9 +42,8 @@ class Artist {
     };
   }
 
-  factory Artist.fromMap(Map<String, dynamic> map) {
+  factory Artist.fromMap(Map<dynamic, dynamic> map) {
     return Artist(
-      uuid: map['uuid'] ?? '',
       email: map['email'] ?? '',
       fullname: map['fullname'] ?? '',
       username: map['username'] ?? '',
@@ -58,33 +54,32 @@ class Artist {
 
   String toJson() => json.encode(toMap());
 
-  factory Artist.fromJson(String source) => Artist.fromMap(json.decode(source));
+  factory Artist.fromJson(Map<dynamic, dynamic> source) =>
+      Artist.fromMap(source);
 
   @override
   String toString() {
-    return 'Artist(uuid: $uuid, email: $email, fullname: $fullname, username: $username, profileImg: $profileImg, bio: $bio)';
+    return 'Artist( email: $email, fullname: $fullname, username: $username, profileImg: $profileImg, bio: $bio)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Artist &&
-      other.uuid == uuid &&
-      other.email == email &&
-      other.fullname == fullname &&
-      other.username == username &&
-      other.profileImg == profileImg &&
-      other.bio == bio;
+        other.email == email &&
+        other.fullname == fullname &&
+        other.username == username &&
+        other.profileImg == profileImg &&
+        other.bio == bio;
   }
 
   @override
   int get hashCode {
-    return uuid.hashCode ^
-      email.hashCode ^
-      fullname.hashCode ^
-      username.hashCode ^
-      profileImg.hashCode ^
-      bio.hashCode;
+    return email.hashCode ^
+        fullname.hashCode ^
+        username.hashCode ^
+        profileImg.hashCode ^
+        bio.hashCode;
   }
 }

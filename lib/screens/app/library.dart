@@ -1,13 +1,17 @@
 import 'dart:math';
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
+import 'package:flutters_of_hamelin/models/artist.dart';
 
 import 'music_player.dart';
 
 class Library extends StatelessWidget {
-  const Library({Key? key}) : super(key: key);
-
+  Library({Key? key}) : super(key: key);
+  final auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     TextStyle follStyle = const TextStyle(
@@ -29,68 +33,81 @@ class Library extends StatelessWidget {
               icon: Icon(Icons.person_off)),
         ],
       ),
-      body: ListView(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(profile.banner), fit: BoxFit.fitHeight)),
-            child: Column(
-              children: [
-                const SizedBox(height: 50),
-                Text(
-                  profile.name,
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-                const SizedBox(height: 25),
-                CircleAvatar(
-                  backgroundImage: AssetImage(profile.avatar),
-                  radius: 50,
-                ),
-                const SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
+      body: FutureBuilder<DocumentSnapshot>(
+          future: db.collection('Artists').doc(auth.currentUser!.uid).get(),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasData) {
+              Artist artist = Artist.fromJson(snapshot.data!.data() as Map);
+              print(snapshot.data);
+              return ListView(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(profile.banner),
+                            fit: BoxFit.fitHeight)),
+                    child: Column(
                       children: [
+                        const SizedBox(height: 50),
                         Text(
-                          "Followers",
-                          style: follStyle,
+                          artist.username,
+                          style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         ),
-                        Text(
-                          '${profile.followers}',
-                          style: numStyle,
+                        const SizedBox(height: 25),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(profile.avatar),
+                          radius: 50,
                         ),
+                        const SizedBox(height: 25),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "Followers",
+                                  style: follStyle,
+                                ),
+                                Text(
+                                  '${profile.followers}',
+                                  style: numStyle,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  "Following",
+                                  style: follStyle,
+                                ),
+                                Text(
+                                  '${profile.following}',
+                                  style: numStyle,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 25),
                       ],
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          "Following",
-                          style: follStyle,
-                        ),
-                        Text(
-                          '${profile.following}',
-                          style: numStyle,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 25),
-              ],
-            ),
-          ),
-          const SizedBox(height: 15),
-          const _ArtistList(title: 'Artists'),
-          const SizedBox(height: 15),
-          const _GenreList(title: 'Genres'),
-          const _PlaylistList(title: 'My Playlists'),
-        ],
-      ),
+                  ),
+                  const SizedBox(height: 15),
+                  const _ArtistList(title: 'Artists'),
+                  const SizedBox(height: 15),
+                  const _GenreList(title: 'Genres'),
+                  const _PlaylistList(title: 'My Playlists'),
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
     );
   }
 }
