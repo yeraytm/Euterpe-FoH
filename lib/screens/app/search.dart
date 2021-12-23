@@ -38,7 +38,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }) {
     if (filter.isNotEmpty) {
       return _searchHistory.reversed
-          .where((term) => term.startsWith(filter))
+          .where(
+              (term) => term.startsWith(RegExp(filter, caseSensitive: false)))
           .toList();
     } else {
       return _searchHistory.reversed.toList();
