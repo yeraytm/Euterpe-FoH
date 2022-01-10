@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/cubit/cubits.dart';
+import 'package:flutters_of_hamelin/screens/app/upload.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 
 class BottomNav extends StatefulWidget {
@@ -36,6 +37,8 @@ class _BottomNavState extends State<BottomNav> {
               return const Home();
             case NavBarItem.search:
               return const Search();
+            case NavBarItem.upload:
+              return const Upload();
             case NavBarItem.library:
               return Library();
             default:
@@ -49,6 +52,8 @@ class _BottomNavState extends State<BottomNav> {
         builder: (context, AsyncSnapshot<NavBarItem> snapshot) {
           return BottomNavigationBar(
             fixedColor: Colors.black,
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
             currentIndex: snapshot.data!.index,
             onTap: _bottomNavBarCubit.pickItem,
             items: const [
@@ -60,6 +65,10 @@ class _BottomNavState extends State<BottomNav> {
                   label: 'Search',
                   activeIcon: Icon(Icons.explore),
                   icon: Icon(Icons.explore_outlined)),
+              BottomNavigationBarItem(
+                  label: 'Upload',
+                  activeIcon: Icon(Icons.upload_file),
+                  icon: Icon(Icons.upload_file_outlined)),
               BottomNavigationBarItem(
                   label: 'Library',
                   activeIcon: Icon(Icons.library_music),
