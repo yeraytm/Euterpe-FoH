@@ -51,3 +51,6 @@ android/app/google-services.json
 generated_plugins.cmake
 generated_plugin_registrant.h
 generated_plugin_registrant.cc
+
+#vs counter
+.VSCodeCounter/
