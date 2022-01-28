@@ -110,8 +110,8 @@ class _MainListState extends State<_MainList> {
                   items: snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                         document.data()! as Map<String, dynamic>;
-                    Artist artist = Artist.fromMap(data);
-                    return ArtistCard(artist: artist);
+                    Album album = Album.fromMap(data);
+                    return AlbumCard(album: album);
                   }).toList(),
                 );
               });

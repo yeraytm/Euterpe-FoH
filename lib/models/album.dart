@@ -35,7 +35,7 @@ class Album {
   factory Album.fromMap(Map<String, dynamic> map) {
     return Album(
       name: map['name'] ?? '',
-      image: map['image'] ?? '',
+      image: map['img'] ?? '',
       songs: (map['songs'] as List).cast<String>(),
     );
   }
