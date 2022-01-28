@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
+import 'package:flutters_of_hamelin/screens/app/artist_info.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 
 import '../colors.dart';
@@ -24,7 +25,14 @@ class _ArtistCardState extends State<ArtistCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ArtistInfo(
+                        artist: widget.artist,
+                      )));
+        },
         child: Stack(
           children: [
             CircleAvatar(
