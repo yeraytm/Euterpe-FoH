@@ -32,4 +32,17 @@ class DatabaseService {
       'songs': FieldValue.arrayUnion([songId])
     });
   }
+
+  Future<List<String>> getSongsFromPlaylist(String playlistId) async {
+    DocumentSnapshot playlistSnapshot = await users
+        .doc(currentUser!.uid)
+        .collection('Playlists')
+        .doc(playlistId)
+        .get();
+    List<dynamic> songsSnapshots = playlistSnapshot.get('songs').map((song) {
+      return song.toString();
+    }).toList();
+    List<String> songs = songsSnapshots.cast<String>();
+    return songs;
+  }
 }

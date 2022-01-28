@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
-import 'package:flutters_of_hamelin/screens/playlist_form.dart';
+import 'package:flutters_of_hamelin/screens/app/playlist_form.dart';
+import 'package:flutters_of_hamelin/screens/app/playlist_songs.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 import 'package:flutters_of_hamelin/widgets/playlist_tile.dart';
 
@@ -226,6 +227,7 @@ class _PlaylistListState extends State<_PlaylistList> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: PlaylistTile(
                         songId: list.isNotEmpty ? list[0] : null,
+                        // playlistTitle: data['name'],
                         playlistTitle: data['name'],
                         playlistId: document.id,
                       ),

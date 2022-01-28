@@ -54,10 +54,9 @@ class _PlaylistTileSelectorState extends State<PlaylistTileSelector> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: GestureDetector(
               onTap: () {
-                    db.addSongToPlaylist(
-                        widget.selectedSongId, widget.playlistId);
-                    Navigator.pop(context);
-                  },
+                db.addSongToPlaylist(widget.selectedSongId, widget.playlistId);
+                Navigator.pop(context);
+              },
               child: Row(
                 children: [
                   Container(

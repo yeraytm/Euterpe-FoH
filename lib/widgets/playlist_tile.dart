@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
+import 'package:flutters_of_hamelin/screens/app/playlist_songs.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 
 class PlaylistTile extends StatefulWidget {
@@ -49,28 +50,38 @@ class _PlaylistTileState extends State<PlaylistTile> {
     return widget.songId == null || widget.songId == ""
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  color: Colors.grey,
-                ),
-                const SizedBox(
-                  width: 8.0,
-                ),
-                Text(
-                  widget.playlistTitle,
-                  style: const TextStyle(fontSize: 18.0, color: Colors.black),
-                ),
-                const Expanded(child: SizedBox()),
-                IconButton(
-                  onPressed: () {
-                    _showAlertDialog(widget.playlistId);
-                  },
-                  icon: const Icon(Icons.delete),
-                ),
-              ],
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PlaylistSongs(playlistId: widget.playlistId),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    width: 8.0,
+                  ),
+                  Text(
+                    widget.playlistTitle,
+                    style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                  ),
+                  const Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed: () {
+                      _showAlertDialog(widget.playlistId);
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              ),
             ),
           )
         : FutureBuilder(
@@ -85,7 +96,14 @@ class _PlaylistTileState extends State<PlaylistTile> {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PlaylistSongs(playlistId: widget.playlistId),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
                       SizedBox(
