@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
+import 'package:flutters_of_hamelin/widgets/widgets.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,14 +23,14 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  static const historyLength = 5;
+  static const historyLength = 10;
 
   final List<String> _searchHistory = [
-    'Stay',
-    'Imagine Dragons',
+    'Hometown',
+    'Prisioner',
     'Future Nostalgia',
-    'Sucker',
-    'Levitating',
+    'Be',
+    'I',
   ];
 
   late List<String> filteredSearchHistory;
@@ -222,32 +223,53 @@ class SearchResultsListView extends StatelessWidget {
     final db = FirebaseFirestore.instance;
     final floatingSB = FloatingSearchBar.of(context);
     if (floatingSB != null) {
-      return FutureBuilder(
-        future: db
+      String tmpSearchTerm = searchTerm;
+      if (tmpSearchTerm.isNotEmpty && tmpSearchTerm.length >= 5) {
+        tmpSearchTerm = tmpSearchTerm.substring(0, tmpSearchTerm.length - 1);
+      }
+      return StreamBuilder(
+        stream: db
             .collection("Songs")
-            .where('name', isGreaterThan: searchTerm)
-            .where('name', isLessThanOrEqualTo: searchTerm + '\uf7ff')
-            .get(),
+            .orderBy('name')
+            .where('name', isGreaterThan: tmpSearchTerm)
+            .where('name', isLessThanOrEqualTo: tmpSearchTerm + '\uf8ff')
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
-          } else if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
           }
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
-              Song song = Song.fromMap(data);
-              return Container(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: ListTile(
-                  leading: const Icon(Icons.ac_unit),
-                  title: Text(song.name),
-                ),
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const Center(child: CircularProgressIndicator());
+            case ConnectionState.active:
+              List<Song> songsResult =
+                  snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                return Song.fromMap(data);
+              }).toList();
+              return ListView.separated(
+                itemCount: snapshot.data!.size,
+                padding: EdgeInsets.only(
+                    top: floatingSB.style.height +
+                        floatingSB.style.margins.vertical),
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                      height: 12,
+                      indent: 10,
+                      endIndent: 10,
+                      thickness: 1,
+                      color: Colors.grey);
+                },
+                itemBuilder: (context, index) {
+                  return SongTile(song: songsResult[index]);
+                },
               );
-            }).toList(),
-          );
+            case ConnectionState.none:
+              return ErrorWidget("The stream was wrong (connectionState.none)");
+            case ConnectionState.done:
+              return ErrorWidget("The stream has ended?!");
+          }
         },
       );
     } else {
@@ -257,28 +279,3 @@ class SearchResultsListView extends StatelessWidget {
     }
   }
 }
-
-// class SongResult extends StatelessWidget {
-//   const SongResult({
-//     Key? key,
-//     required this.floatingSB,
-//     required this.searchTerm,
-//   }) : super(key: key);
-
-//   final FloatingSearchBarState? floatingSB;
-//   final String searchTerm;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       padding: EdgeInsets.only(
-//           top: floatingSB!.style.height + floatingSB!.style.margins.vertical),
-//       itemCount: 10,
-//       itemBuilder: (context, index) {
-//         return ListTile(
-
-//         )
-//       },
-//     );
-//   }
-// }

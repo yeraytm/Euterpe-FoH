@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutters_of_hamelin/models/models.dart';
-
 class Playlist {
   String name;
   String description;
