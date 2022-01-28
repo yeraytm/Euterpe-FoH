@@ -18,7 +18,7 @@ class _PlaylistSelectorState extends State<PlaylistSelector> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select the playlist'),
+        title: const Text('Select the playlist to add the song'),
         backgroundColor: Colors.black,
       ),
       body: Column(

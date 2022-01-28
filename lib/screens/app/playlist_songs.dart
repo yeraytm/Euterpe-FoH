@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
-import 'package:flutters_of_hamelin/widgets/widgets.dart';
+import 'package:flutters_of_hamelin/widgets/song_tile_delete.dart';
 
 class PlaylistSongs extends StatelessWidget {
   PlaylistSongs({
@@ -48,7 +48,7 @@ class PlaylistSongs extends StatelessWidget {
                             }
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: SongTile(song: snapshot.data!, songId: songId),
+                              child: SongTileDelete(song: snapshot.data!, songId: songId, playlistId: playlistId),
                             );
                           });
                     }).toList(),

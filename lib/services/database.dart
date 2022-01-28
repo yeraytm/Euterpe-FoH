@@ -33,6 +33,12 @@ class DatabaseService {
     });
   }
 
+  void removeSongFromPlaylist(String songId, String playlistId) async {
+    users.doc(currentUser!.uid).collection('Playlists').doc(playlistId).update({
+      'songs': FieldValue.arrayRemove([songId])
+    });
+  }
+
   Future<List<String>> getSongsFromPlaylist(String playlistId) async {
     DocumentSnapshot playlistSnapshot = await users
         .doc(currentUser!.uid)
