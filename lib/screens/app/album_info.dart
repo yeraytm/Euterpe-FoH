@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 import 'package:flutters_of_hamelin/widgets/widgets.dart';

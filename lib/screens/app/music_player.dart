@@ -2,7 +2,6 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/cubit/audio_player_cubit_cubit.dart';
-import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator/palette_generator.dart';

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutters_of_hamelin/data/data.dart';
+import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/screens/app/playlist_form.dart';
 import 'package:flutters_of_hamelin/screens/app/playlist_songs.dart';
@@ -30,7 +30,7 @@ class Library extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 image: DecorationImage(
-              image: AssetImage(profile.banner),
+              image: AssetImage(Assets.banner),
               fit: BoxFit.fitWidth,
             )),
             child: Column(
@@ -46,7 +46,7 @@ class Library extends StatelessWidget {
                 const SizedBox(height: 15),
                 CircleAvatar(
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage(profile.avatar),
+                  backgroundImage: AssetImage(Assets.avatar),
                   radius: 50,
                 ),
                 const SizedBox(height: 15),

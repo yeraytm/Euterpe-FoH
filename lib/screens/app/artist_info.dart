@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/assets.dart';
-import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
 import 'package:flutters_of_hamelin/widgets/widgets.dart';
