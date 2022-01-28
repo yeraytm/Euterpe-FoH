@@ -1,9 +1,13 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/artist.dart';
+import 'package:flutters_of_hamelin/models/song.dart';
+import 'package:flutters_of_hamelin/screens/playlist_form.dart';
+import 'package:flutters_of_hamelin/services/database.dart';
 
 import 'music_player.dart';
 
@@ -49,7 +53,7 @@ Widget _buildScreen(Artist artist) {
     fontSize: 14,
     color: Colors.white,
   );
-  return ListView(
+  return Column(
     children: [
       Container(
         decoration: BoxDecoration(
@@ -105,10 +109,10 @@ Widget _buildScreen(Artist artist) {
         ),
       ),
       const SizedBox(height: 15),
-      const _ArtistList(title: 'Artists'),
-      const SizedBox(height: 15),
-      const _GenreList(title: 'Genres'),
-      const _PlaylistList(title: 'My Playlists'),
+      // const _ArtistList(title: 'Artists'),
+      // const SizedBox(height: 15),
+      // const _GenreList(title: 'Genres'),
+      _PlaylistList(title: 'My Playlists'),
     ],
   );
 }
@@ -157,168 +161,125 @@ class _ArtistList extends StatelessWidget {
   }
 }
 
-class _GenreList extends StatelessWidget {
-  const _GenreList({Key? key, required this.title}) : super(key: key);
+class _PlaylistList extends StatefulWidget {
+  _PlaylistList({Key? key, required this.title}) : super(key: key);
   final String title;
+
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        SizedBox(
-          height: 135,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: genreList.length ~/ 2,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              width: 200,
-              child: Column(
-                children: [
-                  Container(
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      color: Colors
-                          .primaries[Random().nextInt(Colors.primaries.length)],
-                    ),
-                    child: Center(
-                      child: Text(
-                        genreList[index],
-                        style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      color: Colors
-                          .primaries[Random().nextInt(Colors.primaries.length)],
-                    ),
-                    child: Center(
-                      child: Text(genreList[index + genreList.length ~/ 2],
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  State<_PlaylistList> createState() => _PlaylistListState();
 }
 
-class _PlaylistList extends StatelessWidget {
-  const _PlaylistList({Key? key, required this.title}) : super(key: key);
-  final String title;
+class _PlaylistListState extends State<_PlaylistList> {
+  final db = FirebaseFirestore.instance;
+  void _showPlaylistPanel() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+          child: const PlaylistForm(),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+    DatabaseService db = DatabaseService();
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Expanded(child: SizedBox()),
+                TextButton.icon(
+                  onPressed: () {
+                    _showPlaylistPanel();
+                  },
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  label: const Text(
+                    'Create Playlist',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                )
+              ],
             ),
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        SizedBox(
-          height: 232,
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            scrollDirection: Axis.horizontal,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1 / 5,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20),
-            itemCount: songList.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          MusicPlayerScreen(song: songList[index])));
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                          width: 64,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            image: DecorationImage(
-                              image: AssetImage(songList[index].img),
-                              fit: BoxFit.cover,
+          const SizedBox(
+            height: 8,
+          ),
+          Expanded(
+            child: StreamBuilder(
+              stream: db.playlists.snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  // return const SpinKitRotatingCircle(
+                  //   color: Colors.blueGrey,
+                  //   size: 50.0,
+                  // );
+                  return const Text('Loading...');
+                } else {
+                  List<Future<Widget>> list =
+                      snapshot.data!.docs.map((document) async {
+                    List songs = document.get('songs');
+                    Song? firstSong = songs.isNotEmpty && songs[0] != ""
+                        ? await db.getSongById(songs[0])
+                        : null;
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 8.0),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 50.0,
+                              height: 50.0,
+                              child: firstSong != null
+                                  ? Image.network(firstSong.img)
+                                  : Container(color: Colors.grey),
                             ),
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "Playlist Name",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w700),
+                            const SizedBox(
+                              width: 8.0,
                             ),
                             Text(
-                              "Duration",
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              document.get('name'),
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.black,
+                              ),
                             ),
+                            const Expanded(child: SizedBox()),
                           ],
                         ),
-                      ],
-                    ),
-                    const Icon(Icons.favorite_outline),
-                  ],
-                ),
-              );
-            },
+                      ),
+                    );
+                  }).toList();
+                  // return ListView(
+                  //   // separatorBuilder: (context, index) => const Divider(
+                  //   //   color: Colors.black,
+                  //   // ),
+                  //   // itemCount: playlistList.length,
+                  //   children: list,
+                  // );
+                  return Container();
+                }
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
