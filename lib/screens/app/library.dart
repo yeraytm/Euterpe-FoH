@@ -1,5 +1,3 @@
-import 'dart:ffi';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -225,61 +223,104 @@ class _PlaylistListState extends State<_PlaylistList> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
-                  // return const SpinKitRotatingCircle(
-                  //   color: Colors.blueGrey,
-                  //   size: 50.0,
-                  // );
-                  return const Text('Loading...');
-                } else {
-                  List<Future<Widget>> list =
-                      snapshot.data!.docs.map((document) async {
-                    List songs = document.get('songs');
-                    Song? firstSong = songs.isNotEmpty && songs[0] != ""
-                        ? await db.getSongById(songs[0])
-                        : null;
+                  return const Text('Something went wrong.');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return ListView(
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    List list = data['songs'];
                     return Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 8.0),
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: firstSong != null
-                                  ? Image.network(firstSong.img)
-                                  : Container(color: Colors.grey),
-                            ),
-                            const SizedBox(
-                              width: 8.0,
-                            ),
-                            Text(
-                              document.get('name'),
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const Expanded(child: SizedBox()),
-                          ],
-                        ),
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: PlaylistTile(
+                        songId: list.isNotEmpty ? list[0] : null,
+                        title: data['name'],
                       ),
                     );
-                  }).toList();
-                  // return ListView(
-                  //   // separatorBuilder: (context, index) => const Divider(
-                  //   //   color: Colors.black,
-                  //   // ),
-                  //   // itemCount: playlistList.length,
-                  //   children: list,
-                  // );
-                  return Container();
-                }
+                  }).toList(),
+                );
               },
             ),
-          ),
+          )
         ],
       ),
     );
+  }
+}
+
+class PlaylistTile extends StatefulWidget {
+  const PlaylistTile({Key? key, required this.songId, required this.title})
+      : super(key: key);
+  final String? songId;
+  final String title;
+  @override
+  State<PlaylistTile> createState() => _PlaylistTileState();
+}
+
+class _PlaylistTileState extends State<PlaylistTile> {
+  @override
+  Widget build(BuildContext context) {
+    DatabaseService db = DatabaseService();
+    return widget.songId == null || widget.songId == ""
+        ? Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  width: 8.0,
+                ),
+                Text(
+                  widget.title,
+                  style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                ),
+              ],
+            ),
+          )
+        : FutureBuilder(
+            future: db.getSongById(widget.songId!),
+            builder: (BuildContext context, AsyncSnapshot<Song> snapshot) {
+              if (snapshot.hasError) {
+                return Text("Something went wrong");
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text('Loading...');
+              }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Image.network(snapshot.data!.img),
+                      ),
+                      const SizedBox(
+                        width: 8.0,
+                      ),
+                      Text(
+                        widget.title,
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            });
   }
 }
