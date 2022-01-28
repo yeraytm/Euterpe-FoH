@@ -41,26 +41,43 @@ class SongTileState extends State<SongTile> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MusicPlayerScreen(song: widget.song)));
       },
-      child: ListTile(
-        leading: Container(
-          width: 64,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            image: DecorationImage(
-              image: NetworkImage(widget.song.img),
-              fit: BoxFit.contain,
-            ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                height: 64,
+                width: 64,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  image: DecorationImage(
+                    image: NetworkImage(widget.song.img),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.song.name,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    artistName,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ),
-        title: Text(
-          widget.song.name,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        ),
-        subtitle: Text(
-          artistName,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        trailing: const Icon(Icons.favorite_outline),
+          const Icon(Icons.favorite_outline),
+        ],
       ),
     );
   }

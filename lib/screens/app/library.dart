@@ -35,7 +35,7 @@ class Library extends StatelessWidget {
           future: db.collection('Users').doc(auth.currentUser!.uid).get(),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
-              AppUser user = AppUser.fromJson(snapshot.data!.data() as Map);
+              AppUser user = AppUser.fromMap(snapshot.data!.data() as Map<String,dynamic>);
               return _buildScreen(user);
             } else {
               return const Center(

@@ -248,22 +248,25 @@ class SearchResultsListView extends StatelessWidget {
                     document.data()! as Map<String, dynamic>;
                 return Song.fromMap(data);
               }).toList();
-              return ListView.separated(
-                itemCount: snapshot.data!.size,
-                padding: EdgeInsets.only(
-                    top: floatingSB.style.height +
-                        floatingSB.style.margins.vertical),
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                      height: 12,
-                      indent: 10,
-                      endIndent: 10,
-                      thickness: 1,
-                      color: Colors.grey);
-                },
-                itemBuilder: (context, index) {
-                  return SongTile(song: songsResult[index]);
-                },
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView.separated(
+                  itemCount: snapshot.data!.size,
+                  padding: EdgeInsets.only(
+                      top: floatingSB.style.height +
+                          floatingSB.style.margins.vertical),
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                        height: 12,
+                        indent: 10,
+                        endIndent: 10,
+                        thickness: 1,
+                        color: Colors.grey);
+                  },
+                  itemBuilder: (context, index) {
+                    return SongTile(song: songsResult[index]);
+                  },
+                ),
               );
             case ConnectionState.none:
               return ErrorWidget("The stream was wrong (connectionState.none)");
