@@ -76,7 +76,12 @@ class SongTileState extends State<SongTile> {
               ),
             ],
           ),
-          const Icon(Icons.favorite_outline),
+          IconButton(
+            icon: const Icon(Icons.favorite_outline),
+            onPressed: () {
+              print('hello');
+            },
+          ),
         ],
       ),
     );
