@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
+import 'package:flutters_of_hamelin/services/database.dart';
 import 'package:flutters_of_hamelin/widgets/widgets.dart';
 
 class AlbumInfo extends StatelessWidget {
@@ -74,11 +75,9 @@ class AlbumInfo extends StatelessWidget {
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            sliver: SliverToBoxAdapter(
-              child: _SongList(album: album),
-            ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _SongList(album: album),
           )
         ],
       ),
@@ -86,74 +85,35 @@ class AlbumInfo extends StatelessWidget {
   }
 }
 
-class _SongList extends StatefulWidget {
-  _SongList({
-    Key? key,
-    required this.album,
-  }) : super(key: key);
-
-  Album album;
-  final db = FirebaseFirestore.instance;
-
-  @override
-  State<_SongList> createState() => _SongListState();
-}
-
-class _SongListState extends State<_SongList> {
-  List<Song> songs = List.empty();
-
-  // void getSongsFromFirebase(List<QueryDocumentSnapshot> query) async {
-  //   for (int i = 0; i < widget.album.songs.length; ++i) {
-  //     DocumentSnapshot document;
-  //     setState(() {
-  //       Map<String, dynamic> data =
-  //           document.get()data()! as Map<String, dynamic>;
-  //       songs.add(Song.fromMap(data));
-  //     });
-  //   }
-  // }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _SongList extends StatelessWidget {
+  const _SongList({Key? key, required this.album}) : super(key: key);
+  final Album album;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: widget.db.collection("Songs").get(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error!);
-        }
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Center(child: CircularProgressIndicator());
-          case ConnectionState.active:
-          getSongsFromFirebase(snapshot.data!.docs);
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView.builder(
-                    itemCount: songs.length,
-                    itemBuilder: (context, index) {
-                      return SongTile(
-                        song: songs[index],
-                        songId: ,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          case ConnectionState.none:
-            return ErrorWidget("The stream was wrong (connectionState.none)");
-          case ConnectionState.done:
-            return ErrorWidget("The stream has ended?!");
-        }
-      },
+    DatabaseService db = DatabaseService();
+    return SizedBox(
+      height: 500,
+      child: ListView(
+        children: album.songs.map((songId) {
+          return FutureBuilder(
+            future: db.getSongById(songId),
+            builder: (BuildContext context, AsyncSnapshot<Song> snapshot) {
+              if (!snapshot.hasData) {
+                return const Text('Something went wrong.');
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SongTile(song: snapshot.data!, songId: songId),
+              );
+            },
+          );
+        }).toList(),
+      ),
     );
   }
 }

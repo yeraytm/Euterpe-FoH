@@ -23,9 +23,11 @@ class SongTileState extends State<SongTile> {
         .collection('Artists')
         .doc(widget.song.artist);
     DocumentSnapshot documentSnapshot = await doc.get();
-    setState(() {
-      artistName = documentSnapshot.get('name');
-    });
+    if (this.mounted) {
+      setState(() {
+        artistName = documentSnapshot.get('name');
+      });
+    }
   }
 
   @override
