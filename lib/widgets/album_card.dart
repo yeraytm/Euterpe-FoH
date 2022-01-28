@@ -24,7 +24,13 @@ class _AlbumCardState extends State<AlbumCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AlbumInfo(album: widget.album),
+            ),
+          );
+        },
         child: Stack(
           children: [
             Container(
