@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
+import 'package:flutters_of_hamelin/screens/playlist_selector.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
+import 'package:flutters_of_hamelin/services/database.dart';
 
 class SongTile extends StatefulWidget {
-  const SongTile({
-    Key? key,
-    required this.song,
-  }) : super(key: key);
-
+  const SongTile({Key? key, required this.song, required this.songId})
+      : super(key: key);
   final Song song;
+  final String songId;
 
   @override
   State<SongTile> createState() => SongTileState();
@@ -36,6 +36,8 @@ class SongTileState extends State<SongTile> {
 
   @override
   Widget build(BuildContext context) {
+    DatabaseService db = DatabaseService();
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
@@ -83,7 +85,9 @@ class SongTileState extends State<SongTile> {
           IconButton(
             icon: const Icon(Icons.favorite_outline),
             onPressed: () {
-              print('hello');
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      PlaylistSelector(selectedSongId: widget.songId)));
             },
           ),
         ],

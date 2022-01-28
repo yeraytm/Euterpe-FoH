@@ -20,7 +20,7 @@ class Assets{
   static const String maneskinCover = '$mockAssetsDir/maneskin_cover.jpg';
   static const String camilaCabelloCover = '$mockAssetsDir/camila_cabello_cover.jpg';
 
-  static const String avatar = '$mockAssetsDir/avatar.jpg';
+  static const String avatar = '$mockAssetsDir/user_icon_placeholder.png';
   static const String banner = '$mockAssetsDir/banner.jpg';
 
   static const String euterpeLogo = '$assetsDir/euterpe_logo.png';

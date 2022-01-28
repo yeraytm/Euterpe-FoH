@@ -235,6 +235,7 @@ class SearchResultsListView extends StatelessWidget {
             .where('name', isLessThanOrEqualTo: tmpSearchTerm + '\uf8ff')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          late String songId = '';
           if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
           }
@@ -246,6 +247,7 @@ class SearchResultsListView extends StatelessWidget {
                   snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
+                songId = document.id;
                 return Song.fromMap(data);
               }).toList();
               return Padding(
@@ -264,7 +266,10 @@ class SearchResultsListView extends StatelessWidget {
                         color: Colors.grey);
                   },
                   itemBuilder: (context, index) {
-                    return SongTile(song: songsResult[index]);
+                    return SongTile(
+                      song: songsResult[index],
+                      songId: songId,
+                    );
                   },
                 ),
               );

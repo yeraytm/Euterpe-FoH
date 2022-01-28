@@ -7,7 +7,6 @@ class DatabaseService {
   final auth = FirebaseAuth.instance;
   final users = FirebaseFirestore.instance.collection('Users');
   final songs = FirebaseFirestore.instance.collection('Songs');
-  final playlists = FirebaseFirestore.instance.collection('Playlists');
 
   User? get currentUser {
     return auth.currentUser;
@@ -26,5 +25,11 @@ class DatabaseService {
 
   void removePlaylistById(String playlistUid, String userUid) {
     users.doc(userUid).collection('Playlists').doc(playlistUid).delete();
+  }
+
+  void addSongToPlaylist(String songId, String playlistId) async {
+    users.doc(currentUser!.uid).collection('Playlists').doc(playlistId).update({
+      'songs': FieldValue.arrayUnion([songId])
+    });
   }
 }

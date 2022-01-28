@@ -5,7 +5,6 @@ final List<Song> songList = [
   //Song(img:Assets.arcaneCover,name: 'What Could Have Been',artist:'League of Legends', description:'',uri:'',isPlayable: '',isLocal: '',trackNumber:0,popularity:0),
   //Song(img:Assets.dojaCatCover,name: 'Woman',artist:'Doja Cat',description:'',uri:'',isPlayable: '',isLocal: '',trackNumber:0,popularity:0),
   Song(img:Assets.nickyNicoleCover,name: 'Baby',artist:'Nicky Nicole',song: ''),
- 
 ];
 
 final List<String> genreList = [

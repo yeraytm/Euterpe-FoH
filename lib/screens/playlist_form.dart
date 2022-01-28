@@ -21,7 +21,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
       child: Column(
         children: [
           const Text(
-            'Update your brew settings.',
+            'Name your playlist',
             style: TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 20.0),
@@ -36,10 +36,10 @@ class _PlaylistFormState extends State<PlaylistForm> {
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                  (states) => Colors.pink[400]),
+                  (states) => Colors.black),
             ),
             child: const Text(
-              'Update',
+              'Create',
               style: TextStyle(
                 color: Colors.white,
               ),
