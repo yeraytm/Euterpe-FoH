@@ -1,5 +1,5 @@
 export 'album.dart';
-export 'artist.dart';
+export 'user.dart';
 export 'genre.dart';
 export 'playlist.dart';
 export 'profile.dart';

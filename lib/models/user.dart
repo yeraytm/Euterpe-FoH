@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-class Artist {
+class AppUser {
   String email;
   String fullname;
   String username;
   String profileImg;
   String bio;
-  Artist({
+  AppUser({
     required this.email,
     required this.fullname,
     required this.username,
@@ -14,14 +14,14 @@ class Artist {
     required this.bio,
   });
 
-  Artist copyWith({
+  AppUser copyWith({
     String? email,
     String? fullname,
     String? username,
     String? profileImg,
     String? bio,
   }) {
-    return Artist(
+    return AppUser(
       email: email ?? this.email,
       fullname: fullname ?? this.fullname,
       username: username ?? this.username,
@@ -40,8 +40,8 @@ class Artist {
     };
   }
 
-  factory Artist.fromMap(Map<dynamic, dynamic> map) {
-    return Artist(
+  factory AppUser.fromMap(Map<dynamic, dynamic> map) {
+    return AppUser(
       email: map['email'] ?? '',
       fullname: map['fullname'] ?? '',
       username: map['username'] ?? '',
@@ -52,19 +52,19 @@ class Artist {
 
   String toJson() => json.encode(toMap());
 
-  factory Artist.fromJson(Map<dynamic, dynamic> source) =>
-      Artist.fromMap(source);
+  factory AppUser.fromJson(Map<dynamic, dynamic> source) =>
+      AppUser.fromMap(source);
 
   @override
   String toString() {
-    return 'Artist( email: $email, fullname: $fullname, username: $username, profileImg: $profileImg, bio: $bio)';
+    return 'User( email: $email, fullname: $fullname, username: $username, profileImg: $profileImg, bio: $bio)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Artist &&
+    return other is AppUser &&
         other.email == email &&
         other.fullname == fullname &&
         other.username == username &&

@@ -53,7 +53,8 @@ class _CustomEmailSignInFormState extends State<CustomEmailSignInForm> {
                 "fullname": fullnameCtrl.text,
                 "username": usernameCtrl.text,
                 "profileImg": "",
-                "bio": ""
+                "bio": "",
+                "playlists": []
               });
             }
           }

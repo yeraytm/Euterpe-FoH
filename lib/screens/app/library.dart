@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
-import 'package:flutters_of_hamelin/models/artist.dart';
-import 'package:flutters_of_hamelin/models/song.dart';
+import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/screens/playlist_form.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 
@@ -33,11 +32,11 @@ class Library extends StatelessWidget {
         title: const Text('Profile'),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-          future: db.collection('Artists').doc(auth.currentUser!.uid).get(),
+          future: db.collection('Users').doc(auth.currentUser!.uid).get(),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
-              Artist artist = Artist.fromJson(snapshot.data!.data() as Map);
-              return _buildScreen(artist);
+              AppUser user = AppUser.fromJson(snapshot.data!.data() as Map);
+              return _buildScreen(user);
             } else {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -48,7 +47,7 @@ class Library extends StatelessWidget {
   }
 }
 
-Widget _buildScreen(Artist artist) {
+Widget _buildScreen(AppUser user) {
   TextStyle follStyle = const TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
@@ -68,7 +67,7 @@ Widget _buildScreen(Artist artist) {
           children: [
             const SizedBox(height: 15),
             Text(
-              artist.username,
+              user.username,
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -122,49 +121,49 @@ Widget _buildScreen(Artist artist) {
   );
 }
 
-class _ArtistList extends StatelessWidget {
-  const _ArtistList({Key? key, required this.title}) : super(key: key);
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        SizedBox(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: songList.length,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              width: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: AssetImage(songList[index].img), fit: BoxFit.cover),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class _ArtistList extends StatelessWidget {
+//   const _ArtistList({Key? key, required this.title}) : super(key: key);
+//   final String title;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//           child: Text(
+//             title,
+//             style: const TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.w700,
+//             ),
+//           ),
+//         ),
+//         const SizedBox(
+//           height: 8,
+//         ),
+//         SizedBox(
+//           height: 100,
+//           child: ListView.builder(
+//             scrollDirection: Axis.horizontal,
+//             itemCount: songList.length,
+//             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//             itemBuilder: (context, index) => Container(
+//               margin: const EdgeInsets.symmetric(horizontal: 8.0),
+//               width: 100,
+//               decoration: BoxDecoration(
+//                 shape: BoxShape.circle,
+//                 image: DecorationImage(
+//                     image: AssetImage(songList[index].img), fit: BoxFit.cover),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class _PlaylistList extends StatefulWidget {
   const _PlaylistList({Key? key, required this.title}) : super(key: key);
