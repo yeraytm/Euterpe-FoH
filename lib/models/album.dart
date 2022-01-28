@@ -1,26 +1,24 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
+
 class Album {
   String name;
-  String artist;
   String image;
-  List<int> songs;
+  List<String> songs;
   Album({
     required this.name,
-    required this.artist,
     required this.image,
     required this.songs,
   });
 
   Album copyWith({
     String? name,
-    String? artist,
     String? image,
-    List<int>? songs,
+    List<String>? songs,
   }) {
     return Album(
       name: name ?? this.name,
-      artist: artist ?? this.artist,
       image: image ?? this.image,
       songs: songs ?? this.songs,
     );
@@ -29,7 +27,6 @@ class Album {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'artist': artist,
       'image': image,
       'songs': songs,
     };
@@ -38,9 +35,8 @@ class Album {
   factory Album.fromMap(Map<String, dynamic> map) {
     return Album(
       name: map['name'] ?? '',
-      artist: map['artist'] ?? '',
       image: map['image'] ?? '',
-      songs: map['songs'] ?? '',
+      songs: (map['songs'] as List).cast<String>(),
     );
   }
 
@@ -49,23 +45,19 @@ class Album {
   factory Album.fromJson(String source) => Album.fromMap(json.decode(source));
 
   @override
-  String toString() {
-    return 'Album(name: $name, artists: $artist, image: $image, songs: $songs)';
-  }
+  String toString() => 'Album(name: $name, image: $image, songs: $songs)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
 
     return other is Album &&
         other.name == name &&
-        other.artist == artist &&
         other.image == image &&
-        other.songs == songs;
+        listEquals(other.songs, songs);
   }
 
   @override
-  int get hashCode {
-    return name.hashCode ^ artist.hashCode ^ image.hashCode ^ songs.hashCode;
-  }
+  int get hashCode => name.hashCode ^ image.hashCode ^ songs.hashCode;
 }

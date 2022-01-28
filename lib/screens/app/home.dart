@@ -87,6 +87,91 @@ class _MainListState extends State<_MainList> {
   final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
+    Widget _buildCarousels() {
+      switch (_titleCurrentIndex) {
+        case 0:
+          return FutureBuilder(
+              future: db.collection('Albums').get(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                }
+
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    height: 250,
+                    viewportFraction: 0.5,
+                  ),
+                  items: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Artist artist = Artist.fromMap(data);
+                    return ArtistCard(artist: artist);
+                  }).toList(),
+                );
+              });
+        case 1:
+          return FutureBuilder(
+              future: db.collection('Songs').get(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                }
+
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    height: 250,
+                    viewportFraction: 0.5,
+                  ),
+                  items: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Song song = Song.fromMap(data);
+                    return SongCard(song: song);
+                  }).toList(),
+                );
+              });
+        case 2:
+          return FutureBuilder(
+              future: db.collection('Artists').get(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                }
+
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    height: 250,
+                    viewportFraction: 0.5,
+                  ),
+                  items: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Artist artist = Artist.fromMap(data);
+                    return ArtistCard(artist: artist);
+                  }).toList(),
+                );
+              });
+        default:
+          return Container();
+      }
+    }
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 300,
@@ -149,30 +234,7 @@ class _MainListState extends State<_MainList> {
               ),
             ],
           ),
-          FutureBuilder(
-              future: db.collection('Songs').get(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if(snapshot.hasError){
-                      return Text('Something went wrong');
-                    }
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return Text('Loading...');
-                    }
-
-                return CarouselSlider(
-                  options: CarouselOptions(
-                    enlargeCenterPage: true,
-                    height: 250,
-                    viewportFraction: 0.5,
-                  ),
-                  items: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String,dynamic> data = document.data()! as Map<String,dynamic>;
-                    Song song = Song.fromMap(data);
-                    return SongCard(song: song);
-                  }).toList(),
-                );
-              }),
+          _buildCarousels(),
         ],
       ),
     );
