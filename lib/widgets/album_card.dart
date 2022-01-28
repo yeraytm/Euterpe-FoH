@@ -8,8 +8,14 @@ import 'package:flutters_of_hamelin/screens/screens.dart';
 import '../colors.dart';
 
 class AlbumCard extends StatefulWidget {
-  const AlbumCard({Key? key, required this.album}) : super(key: key);
+  const AlbumCard({
+    Key? key,
+    required this.album,
+    required this.albumId,
+  }) : super(key: key);
+
   final Album album;
+  final String albumId;
 
   @override
   State<AlbumCard> createState() => _AlbumCardState();
@@ -27,7 +33,8 @@ class _AlbumCardState extends State<AlbumCard> {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AlbumInfo(album: widget.album),
+              builder: (context) =>
+                  AlbumInfo(album: widget.album, albumId: widget.albumId),
             ),
           );
         },

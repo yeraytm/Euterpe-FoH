@@ -111,7 +111,7 @@ class _MainListState extends State<_MainList> {
                     Map<String, dynamic> data =
                         document.data()! as Map<String, dynamic>;
                     Album album = Album.fromMap(data);
-                    return AlbumCard(album: album);
+                    return AlbumCard(album: album, albumId: document.id);
                   }).toList(),
                 );
               });
@@ -291,7 +291,8 @@ class _SongList extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AlbumInfo(album: album)));
+                                builder: (context) => AlbumInfo(
+                                    album: album, albumId: document.id)));
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8.0),

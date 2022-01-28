@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/assets.dart';
@@ -124,7 +123,8 @@ class _SongList extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AlbumInfo(album: album)));
+                                builder: (context) => AlbumInfo(
+                                    album: album, albumId: document.id)));
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8.0),
