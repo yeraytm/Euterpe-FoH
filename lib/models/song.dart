@@ -3,46 +3,28 @@ import 'dart:convert';
 class Song {
   String img;
   String name;
-  String description;
+  String song;
   String artist;
-  String uri;
-  String isPlayable;
-  String isLocal;
-  int trackNumber;
-  int popularity;
+
+  
   Song({
     required this.img,
     required this.name,
-    required this.description,
+    required this.song,
     required this.artist,
-    required this.uri,
-    required this.isPlayable,
-    required this.isLocal,
-    required this.trackNumber,
-    required this.popularity,
   });
 
   Song copyWith({
     String? img,
     String? name,
-    String? description,
+    String? song,
     String? artist,
-    String? uri,
-    String? isPlayable,
-    String? isLocal,
-    int? trackNumber,
-    int? popularity,
   }) {
     return Song(
       img: img ?? this.img,
       name: name ?? this.name,
-      description: description ?? this.description,
+      song: song ?? this.song,
       artist: artist ?? this.artist,
-      uri: uri ?? this.uri,
-      isPlayable: isPlayable ?? this.isPlayable,
-      isLocal: isLocal ?? this.isLocal,
-      trackNumber: trackNumber ?? this.trackNumber,
-      popularity: popularity ?? this.popularity,
     );
   }
 
@@ -50,13 +32,8 @@ class Song {
     return {
       'img': img,
       'name': name,
-      'description': description,
+      'song': song,
       'artist': artist,
-      'uri': uri,
-      'isPlayable': isPlayable,
-      'isLocal': isLocal,
-      'track_number': trackNumber,
-      'popularity': popularity,
     };
   }
 
@@ -64,13 +41,8 @@ class Song {
     return Song(
       img: map['img'] ?? '',
       name: map['name'] ?? '',
-      description: map['description'] ?? '',
+      song: map['song'] ?? '',
       artist: map['artist'] ?? '',
-      uri: map['uri'] ?? '',
-      isPlayable: map['isPlayable'] ?? '',
-      isLocal: map['isLocal'] ?? '',
-      trackNumber: map['track_number']?.toInt() ?? 0,
-      popularity: map['popularity']?.toInt() ?? 0,
     );
   }
 
@@ -80,7 +52,7 @@ class Song {
 
   @override
   String toString() {
-    return 'Song(img: $img, name: $name, description: $description, artist: $artist, uri: $uri, isPlayable: $isPlayable, isLocal: $isLocal, track_number: $trackNumber, popularity: $popularity)';
+    return 'Song(img: $img, name: $name, song: $song, artist: $artist)';
   }
 
   @override
@@ -90,25 +62,15 @@ class Song {
     return other is Song &&
       other.img == img &&
       other.name == name &&
-      other.description == description &&
-      other.artist == artist &&
-      other.uri == uri &&
-      other.isPlayable == isPlayable &&
-      other.isLocal == isLocal &&
-      other.trackNumber == trackNumber &&
-      other.popularity == popularity;
+      other.song == song &&
+      other.artist == artist;
   }
 
   @override
   int get hashCode {
     return img.hashCode ^
       name.hashCode ^
-      description.hashCode ^
-      artist.hashCode ^
-      uri.hashCode ^
-      isPlayable.hashCode ^
-      isLocal.hashCode ^
-      trackNumber.hashCode ^
-      popularity.hashCode;
+      song.hashCode ^
+      artist.hashCode;
   }
 }

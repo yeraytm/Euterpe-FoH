@@ -1,7 +1,12 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutters_of_hamelin/cubit/audio_player_cubit_cubit.dart';
+import 'package:flutters_of_hamelin/data/data.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:provider/provider.dart';
 
 class MusicPlayerScreen extends StatefulWidget {
   const MusicPlayerScreen({Key? key, required this.song}) : super(key: key);
@@ -11,30 +16,49 @@ class MusicPlayerScreen extends StatefulWidget {
 }
 
 class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
+  late final AssetsAudioPlayer assetsAudioPlayer;
+  String artistName = '';
   PaletteGenerator? _paletteGenerator;
+
   Future<void> _updatePaletteGenerator(String img) async {
     _paletteGenerator = await PaletteGenerator.fromImageProvider(
-      AssetImage(img),
+      NetworkImage(img),
       maximumColorCount: 15,
     );
     setState(() {});
   }
 
+  void getArtist() async {
+    final doc = FirebaseFirestore.instance
+        .collection('Artists')
+        .doc(widget.song.artist);
+    DocumentSnapshot documentSnapshot = await doc.get();
+    setState(() {
+      artistName = documentSnapshot.get('name');
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getArtist();
+    context.read<AudioPlayerCubitCubit>().openAudioPlayer(widget.song,artistName);
+    setState(() {
+      assetsAudioPlayer = context.read<AudioPlayerCubitCubit>().assetsAudioPlayer;
+    });
     _updatePaletteGenerator(widget.song.img);
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: _paletteGenerator?.dominantColor?.color,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          widget.song.artist,
+          artistName,
           style: TextStyle(
               fontFamily: GoogleFonts.nunito().fontFamily, fontSize: 16),
         ),
@@ -59,7 +83,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                   color: Colors.white),
             ),
             Text(
-              widget.song.artist,
+              artistName,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 16,
@@ -76,7 +100,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Icon(
                   Icons.block,
                   color: Colors.white,
@@ -87,12 +111,17 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                   color: Colors.white,
                   size: 48,
                 ),
-                CircleAvatar(
-                    radius: 36,
-                    child: Icon(
-                      Icons.play_arrow,
-                      size: 48,
-                    )),
+                GestureDetector(
+                  onTap: () {
+                    assetsAudioPlayer.playOrPause();
+                  },
+                  child: CircleAvatar(
+                      radius: 36,
+                      child: assetsAudioPlayer.isPlaying.value ? Icon(Icons.pause): Icon(
+                        Icons.play_arrow,
+                        size: 48,
+                      )),
+                ),
                 Icon(
                   Icons.skip_next,
                   color: Colors.white,
@@ -120,7 +149,7 @@ class SongImageCircle extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: Colors.white,
       radius: 150,
-      backgroundImage: AssetImage(imgUri),
+      backgroundImage: NetworkImage(imgUri),
     );
   }
 }

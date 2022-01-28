@@ -1,9 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/colors.dart';
 import 'package:flutters_of_hamelin/data/data.dart';
+import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:flutters_of_hamelin/screens/screens.dart';
+import 'package:flutters_of_hamelin/widgets/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
@@ -81,7 +84,7 @@ class _MainList extends StatefulWidget {
 class _MainListState extends State<_MainList> {
   final CarouselController _titleCarouselController = CarouselController();
   int _titleCurrentIndex = 1;
-
+  final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -146,106 +149,30 @@ class _MainListState extends State<_MainList> {
               ),
             ],
           ),
-          CarouselSlider(
-            options: CarouselOptions(
-              enlargeCenterPage: true,
-              height: 250,
-              viewportFraction: 0.5,
-            ),
-            items: songList
-                .map(
-                  (song) => Builder(
-                    builder: (context) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  MusicPlayerScreen(song: song)));
-                        },
-                        child: Card(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16)),
-                                  image: DecorationImage(
-                                      image: AssetImage(song.img),
-                                      fit: BoxFit.cover),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 7,
-                                left: 7,
-                                right: 7,
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8)),
-                                  child: BackdropFilter(
-                                    filter:
-                                        ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            white.withOpacity(0.2),
-                                            white.withOpacity(0.1)
-                                          ],
-                                          begin: AlignmentDirectional.topStart,
-                                          end: AlignmentDirectional.bottomEnd,
-                                        ),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(8)),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                song.name,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: white,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 4.0,
-                                              ),
-                                              Text(
-                                                song.artist,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+          FutureBuilder(
+              future: db.collection('Songs').get(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if(snapshot.hasError){
+                      return Text('Something went wrong');
+                    }
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Text('Loading...');
+                    }
+
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    height: 250,
+                    viewportFraction: 0.5,
                   ),
-                )
-                .toList(),
-          ),
+                  items: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String,dynamic> data = document.data()! as Map<String,dynamic>;
+                    Song song = Song.fromMap(data);
+                    return SongCard(song: song);
+                  }).toList(),
+                );
+              }),
         ],
       ),
     );
