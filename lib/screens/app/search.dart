@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Search extends StatelessWidget {
   const Search({Key? key}) : super(key: key);
@@ -52,12 +54,14 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
 
-    _searchHistory.add(term);
-    if (_searchHistory.length > historyLength) {
-      _searchHistory.removeRange(0, _searchHistory.length - historyLength);
-    }
+    if (term != "") {
+      _searchHistory.add(term);
+      if (_searchHistory.length > historyLength) {
+        _searchHistory.removeRange(0, _searchHistory.length - historyLength);
+      }
 
-    filteredSearchHistory = filterSearchTerms(filter: "");
+      filteredSearchHistory = filterSearchTerms(filter: "");
+    }
   }
 
   void deleteSearchTerm(String term) {
@@ -215,18 +219,36 @@ class SearchResultsListView extends StatelessWidget {
       );
     }
 
+    final db = FirebaseFirestore.instance;
     final floatingSB = FloatingSearchBar.of(context);
     if (floatingSB != null) {
-      return ListView(
-        padding: EdgeInsets.only(
-            top: floatingSB.style.height + floatingSB.style.margins.vertical),
-        children: List.generate(
-          50,
-          (index) => ListTile(
-            title: Text('$searchTerm search result'),
-            subtitle: Text(index.toString()),
-          ),
-        ),
+      return FutureBuilder(
+        future: db
+            .collection("Songs")
+            .where('name', isGreaterThan: searchTerm)
+            .where('name', isLessThanOrEqualTo: searchTerm + '\uf7ff')
+            .get(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error!);
+          } else if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
+              Song song = Song.fromMap(data);
+              return Container(
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                child: ListTile(
+                  leading: const Icon(Icons.ac_unit),
+                  title: Text(song.name),
+                ),
+              );
+            }).toList(),
+          );
+        },
       );
     } else {
       return const Center(
@@ -235,3 +257,28 @@ class SearchResultsListView extends StatelessWidget {
     }
   }
 }
+
+// class SongResult extends StatelessWidget {
+//   const SongResult({
+//     Key? key,
+//     required this.floatingSB,
+//     required this.searchTerm,
+//   }) : super(key: key);
+
+//   final FloatingSearchBarState? floatingSB;
+//   final String searchTerm;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       padding: EdgeInsets.only(
+//           top: floatingSB!.style.height + floatingSB!.style.margins.vertical),
+//       itemCount: 10,
+//       itemBuilder: (context, index) {
+//         return ListTile(
+
+//         )
+//       },
+//     );
+//   }
+// }

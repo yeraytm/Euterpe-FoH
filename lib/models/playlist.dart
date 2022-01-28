@@ -1,46 +1,54 @@
 import 'dart:convert';
 
+import 'package:flutters_of_hamelin/models/models.dart';
+
 class Playlist {
   String name;
   String description;
+  int owner;
   String img;
-  String artist;
   int numFollowers;
-  DateTime releaseDate;
+  List<int> followerList;
+  List<int> songs;
   Playlist({
     required this.name,
     required this.description,
+    required this.owner,
     required this.img,
-    required this.artist,
     required this.numFollowers,
-    required this.releaseDate,
+    required this.followerList,
+    required this.songs,
   });
 
   Playlist copyWith({
     String? name,
     String? description,
+    int? owner,
     String? img,
-    String? artist,
     int? numFollowers,
-    DateTime? releaseDate,
-  }) =>
-      Playlist(
-        name: name ?? this.name,
-        description: description ?? this.description,
-        img: img ?? this.img,
-        artist: artist ?? this.artist,
-        numFollowers: numFollowers ?? this.numFollowers,
-        releaseDate: releaseDate ?? this.releaseDate,
-      );
+    List<int>? followerList,
+    List<int>? songs,
+  }) {
+    return Playlist(
+      name: name ?? this.name,
+      description: description ?? this.description,
+      owner: owner ?? this.owner,
+      img: img ?? this.img,
+      numFollowers: numFollowers ?? this.numFollowers,
+      followerList: followerList ?? this.followerList,
+      songs: songs ?? this.songs,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'description': description,
+      'owner': owner,
       'img': img,
-      'artist': artist,
       'numFollowers': numFollowers,
-      'releaseDate': releaseDate,
+      'followerList': followerList,
+      'songs': songs,
     };
   }
 
@@ -48,10 +56,11 @@ class Playlist {
     return Playlist(
       name: map['name'] ?? '',
       description: map['description'] ?? '',
+      owner: map['owner'] ?? '',
       img: map['img'] ?? '',
-      artist: map['artist'] ?? '',
       numFollowers: map['numFollowers'] ?? '',
-      releaseDate: map['releaseDate'] ?? '',
+      followerList: map['followerList'] ?? '',
+      songs: map['songs'] ?? '',
     );
   }
 
@@ -62,7 +71,7 @@ class Playlist {
 
   @override
   String toString() {
-    return 'Playlist(name: $name, description: $description, img: $img, artist: $artist, numFollowers: $numFollowers, releaseDate: $releaseDate)';
+    return 'Playlist(name: $name, description: $description, owner: $owner, img: $img, numFollowers: $numFollowers, followerList: $followerList, songs: $songs)';
   }
 
   @override
@@ -72,19 +81,21 @@ class Playlist {
     return other is Playlist &&
         other.name == name &&
         other.description == description &&
+        other.owner == owner &&
         other.img == img &&
-        other.artist == artist &&
         other.numFollowers == numFollowers &&
-        other.releaseDate == releaseDate;
+        other.followerList == followerList &&
+        other.songs == songs;
   }
 
   @override
   int get hashCode {
     return name.hashCode ^
         description.hashCode ^
+        owner.hashCode ^
         img.hashCode ^
-        artist.hashCode ^
         numFollowers.hashCode ^
-        releaseDate.hashCode;
+        followerList.hashCode ^
+        songs.hashCode;
   }
 }

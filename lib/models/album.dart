@@ -4,25 +4,25 @@ class Album {
   String name;
   String artist;
   String image;
-  DateTime releaseDate;
+  List<int> songs;
   Album({
     required this.name,
     required this.artist,
     required this.image,
-    required this.releaseDate,
+    required this.songs,
   });
 
   Album copyWith({
     String? name,
     String? artist,
     String? image,
-    DateTime? releaseDate,
+    List<int>? songs,
   }) {
     return Album(
       name: name ?? this.name,
       artist: artist ?? this.artist,
       image: image ?? this.image,
-      releaseDate: releaseDate ?? this.releaseDate,
+      songs: songs ?? this.songs,
     );
   }
 
@@ -31,7 +31,7 @@ class Album {
       'name': name,
       'artist': artist,
       'image': image,
-      'releaseDate': releaseDate,
+      'songs': songs,
     };
   }
 
@@ -40,7 +40,7 @@ class Album {
       name: map['name'] ?? '',
       artist: map['artist'] ?? '',
       image: map['image'] ?? '',
-      releaseDate: map['releaseDate'] ?? '',
+      songs: map['songs'] ?? '',
     );
   }
 
@@ -50,7 +50,7 @@ class Album {
 
   @override
   String toString() {
-    return 'Album(name: $name, artist: $artist, image: $image, releaseDate: $releaseDate)';
+    return 'Album(name: $name, artists: $artist, image: $image, songs: $songs)';
   }
 
   @override
@@ -61,14 +61,11 @@ class Album {
         other.name == name &&
         other.artist == artist &&
         other.image == image &&
-        other.releaseDate == releaseDate;
+        other.songs == songs;
   }
 
   @override
   int get hashCode {
-    return name.hashCode ^
-        artist.hashCode ^
-        image.hashCode ^
-        releaseDate.hashCode;
+    return name.hashCode ^ artist.hashCode ^ image.hashCode ^ songs.hashCode;
   }
 }
