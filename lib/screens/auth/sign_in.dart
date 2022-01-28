@@ -48,7 +48,7 @@ class _CustomEmailSignInFormState extends State<CustomEmailSignInForm> {
           if (newState is SigningIn) {
             final auth = FirebaseAuth.instance;
             if (_action == AuthAction.signUp && auth.currentUser != null) {
-              db.collection('Artists').doc(auth.currentUser!.uid).set({
+              db.collection('Users').doc(auth.currentUser!.uid).set({
                 "email": emailCtrl.text,
                 "fullname": fullnameCtrl.text,
                 "username": usernameCtrl.text,

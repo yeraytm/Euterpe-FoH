@@ -17,4 +17,8 @@ class DatabaseService {
   void createPlaylist(String name) {
     playlists.add({'name': name, 'songs': []});
   }
+
+  void removePlaylistById(String id) {
+    playlists.doc(id).delete();
+  }
 }

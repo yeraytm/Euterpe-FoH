@@ -7,8 +7,6 @@ import 'package:flutters_of_hamelin/models/song.dart';
 import 'package:flutters_of_hamelin/screens/playlist_form.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 
-import 'music_player.dart';
-
 class Library extends StatelessWidget {
   Library({Key? key}) : super(key: key);
   final auth = FirebaseAuth.instance;
@@ -18,12 +16,21 @@ class Library extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
+          TextButton.icon(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              icon: const Icon(Icons.person_off)),
+              icon: const Icon(
+                Icons.person_off,
+                color: Colors.white,
+              ),
+              label: const Text(
+                'Sign out',
+                style: TextStyle(color: Colors.white),
+              )),
         ],
+        backgroundColor: Colors.black,
+        title: const Text('Profile'),
       ),
       body: FutureBuilder<DocumentSnapshot>(
           future: db.collection('Artists').doc(auth.currentUser!.uid).get(),
@@ -56,10 +63,10 @@ Widget _buildScreen(Artist artist) {
       Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(profile.banner), fit: BoxFit.fitHeight)),
+                image: AssetImage(profile.banner), fit: BoxFit.fitWidth)),
         child: Column(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 15),
             Text(
               artist.username,
               style: const TextStyle(
@@ -67,12 +74,12 @@ Widget _buildScreen(Artist artist) {
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
             CircleAvatar(
               backgroundImage: AssetImage(profile.avatar),
               radius: 50,
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -102,7 +109,7 @@ Widget _buildScreen(Artist artist) {
                 ),
               ],
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
           ],
         ),
       ),
@@ -110,7 +117,7 @@ Widget _buildScreen(Artist artist) {
       // const _ArtistList(title: 'Artists'),
       // const SizedBox(height: 15),
       // const _GenreList(title: 'Genres'),
-      _PlaylistList(title: 'My Playlists'),
+      const _PlaylistList(title: 'My Playlists'),
     ],
   );
 }
@@ -160,7 +167,7 @@ class _ArtistList extends StatelessWidget {
 }
 
 class _PlaylistList extends StatefulWidget {
-  _PlaylistList({Key? key, required this.title}) : super(key: key);
+  const _PlaylistList({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -230,7 +237,6 @@ class _PlaylistListState extends State<_PlaylistList> {
                     child: CircularProgressIndicator(),
                   );
                 }
-
                 return ListView(
                   children:
                       snapshot.data!.docs.map((DocumentSnapshot document) {
@@ -241,7 +247,8 @@ class _PlaylistListState extends State<_PlaylistList> {
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: PlaylistTile(
                         songId: list.isNotEmpty ? list[0] : null,
-                        title: data['name'],
+                        playlistTitle: data['name'],
+                        playlistId: document.id,
                       ),
                     );
                   }).toList(),
@@ -256,15 +263,47 @@ class _PlaylistListState extends State<_PlaylistList> {
 }
 
 class PlaylistTile extends StatefulWidget {
-  const PlaylistTile({Key? key, required this.songId, required this.title})
+  const PlaylistTile(
+      {Key? key,
+      required this.songId,
+      required this.playlistTitle,
+      required this.playlistId})
       : super(key: key);
   final String? songId;
-  final String title;
+  final String playlistTitle;
+  final String playlistId;
   @override
   State<PlaylistTile> createState() => _PlaylistTileState();
 }
 
 class _PlaylistTileState extends State<PlaylistTile> {
+  DatabaseService db = DatabaseService();
+  void _showAlertDialog(String playlistId) {
+    String id = playlistId;
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete playlist'),
+            content: const Text("This action can't be undone, are you sure?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('No')),
+              TextButton(
+                onPressed: () {
+                  db.removePlaylistById(id);
+                  Navigator.pop(context);
+                },
+                child: const Text('Yes'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     DatabaseService db = DatabaseService();
@@ -282,8 +321,15 @@ class _PlaylistTileState extends State<PlaylistTile> {
                   width: 8.0,
                 ),
                 Text(
-                  widget.title,
+                  widget.playlistTitle,
                   style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                ),
+                const Expanded(child: SizedBox()),
+                IconButton(
+                  onPressed: () {
+                    _showAlertDialog(widget.playlistId);
+                  },
+                  icon: const Icon(Icons.delete),
                 ),
               ],
             ),
@@ -292,11 +338,10 @@ class _PlaylistTileState extends State<PlaylistTile> {
             future: db.getSongById(widget.songId!),
             builder: (BuildContext context, AsyncSnapshot<Song> snapshot) {
               if (snapshot.hasError) {
-                return Text("Something went wrong");
+                return const Text("Something went wrong");
               }
-
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text('Loading...');
+                return const Center(child: CircularProgressIndicator());
               }
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -313,9 +358,16 @@ class _PlaylistTileState extends State<PlaylistTile> {
                         width: 8.0,
                       ),
                       Text(
-                        widget.title,
+                        widget.playlistTitle,
                         style: const TextStyle(
                             fontSize: 18.0, color: Colors.black),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      IconButton(
+                        onPressed: () {
+                          _showAlertDialog(widget.playlistId);
+                        },
+                        icon: const Icon(Icons.delete),
                       ),
                     ],
                   ),
