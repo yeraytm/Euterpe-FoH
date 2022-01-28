@@ -54,7 +54,14 @@ class _CustomEmailSignInFormState extends State<CustomEmailSignInForm> {
                 "username": usernameCtrl.text,
                 "profileImg": "",
                 "bio": "",
-                "playlists": []
+              });
+              db
+                  .collection('Users')
+                  .doc(auth.currentUser!.uid)
+                  .collection('Playlists')
+                  .add({
+                'name': 'My First Playlist',
+                'songs': [],
               });
             }
           }

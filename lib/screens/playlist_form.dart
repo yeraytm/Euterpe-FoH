@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutters_of_hamelin/services/database.dart';
 
 class PlaylistForm extends StatefulWidget {
-  const PlaylistForm({Key? key}) : super(key: key);
+  PlaylistForm({Key? key, required this.userUid}) : super(key: key);
+  String userUid;
 
   @override
   _PlaylistFormState createState() => _PlaylistFormState();
@@ -45,7 +46,7 @@ class _PlaylistFormState extends State<PlaylistForm> {
             ),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                db.createPlaylist(_playlistName);
+                db.createPlaylist(_playlistName, widget.userUid);
                 Navigator.pop(context);
               }
             },

@@ -175,13 +175,14 @@ class _PlaylistList extends StatefulWidget {
 
 class _PlaylistListState extends State<_PlaylistList> {
   final db = FirebaseFirestore.instance;
-  void _showPlaylistPanel() {
+  void _showPlaylistPanel(String userUid) {
+    String id = userUid;
     showModalBottomSheet(
       context: context,
       builder: (context) {
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-          child: const PlaylistForm(),
+          child: PlaylistForm(userUid: id),
         );
       },
     );
@@ -209,7 +210,7 @@ class _PlaylistListState extends State<_PlaylistList> {
                 const Expanded(child: SizedBox()),
                 TextButton.icon(
                   onPressed: () {
-                    _showPlaylistPanel();
+                    _showPlaylistPanel(db.currentUser!.uid);
                   },
                   icon: const Icon(Icons.add, color: Colors.black),
                   label: const Text(
@@ -225,7 +226,10 @@ class _PlaylistListState extends State<_PlaylistList> {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: db.playlists.snapshots(),
+              stream: db.users
+                  .doc(db.currentUser!.uid)
+                  .collection('Playlists')
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
@@ -293,7 +297,7 @@ class _PlaylistTileState extends State<PlaylistTile> {
                   child: const Text('No')),
               TextButton(
                 onPressed: () {
-                  db.removePlaylistById(id);
+                  db.removePlaylistById(id, db.currentUser!.uid);
                   Navigator.pop(context);
                 },
                 child: const Text('Yes'),
