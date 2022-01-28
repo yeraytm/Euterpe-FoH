@@ -29,6 +29,7 @@ class _ArtistCardState extends State<ArtistCard> {
           children: [
             CircleAvatar(
               radius: 100,
+              backgroundColor: Colors.transparent,
               backgroundImage: NetworkImage(widget.artist.profileImg),
             ),
             Positioned(

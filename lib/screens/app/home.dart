@@ -90,8 +90,8 @@ class _MainListState extends State<_MainList> {
     Widget _buildCarousels() {
       switch (_titleCurrentIndex) {
         case 0:
-          return FutureBuilder(
-              future: db.collection('Albums').get(),
+          return StreamBuilder(
+              stream: db.collection('Albums').snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -116,8 +116,8 @@ class _MainListState extends State<_MainList> {
                 );
               });
         case 1:
-          return FutureBuilder(
-              future: db.collection('Songs').get(),
+          return StreamBuilder(
+              stream: db.collection('Songs').snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -142,8 +142,8 @@ class _MainListState extends State<_MainList> {
                 );
               });
         case 2:
-          return FutureBuilder(
-              future: db.collection('Artists').get(),
+          return StreamBuilder(
+              stream: db.collection('Artists').snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -265,20 +265,39 @@ class _SongList extends StatelessWidget {
         ),
         SizedBox(
           height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: songList.length,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              width: 100,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                image: DecorationImage(
-                    image: AssetImage(songList[index].img), fit: BoxFit.cover),
-              ),
-            ),
-          ),
+          child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('Albums').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("Loading");
+                }
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Song song = Song.fromMap(data);
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                        image: DecorationImage(
+                            image: NetworkImage(song.img), fit: BoxFit.cover),
+                      ),
+                    );
+                  }).toList(),
+                );
+              }),
         ),
       ],
     );
