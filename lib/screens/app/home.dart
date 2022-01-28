@@ -284,15 +284,24 @@ class _SongList extends StatelessWidget {
                       snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                         document.data()! as Map<String, dynamic>;
-                    Song song = Song.fromMap(data);
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        image: DecorationImage(
-                            image: NetworkImage(song.img), fit: BoxFit.cover),
+                    Album album = Album.fromMap(data);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AlbumInfo(album: album)));
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          image: DecorationImage(
+                              image: NetworkImage(album.image),
+                              fit: BoxFit.cover),
+                        ),
                       ),
                     );
                   }).toList(),
