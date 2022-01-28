@@ -309,64 +309,34 @@ class _MultipleTracksList extends StatelessWidget {
         ),
         SizedBox(
           height: 232,
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            scrollDirection: Axis.horizontal,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1 / 5,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20),
-            itemCount: songList.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          MusicPlayerScreen(song: songList[index])));
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                          width: 64,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            image: DecorationImage(
-                              image: AssetImage(songList[index].img),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              songList[index].name,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w700),
-                            ),
-                            Text(
-                              songList[index].artist,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Icon(Icons.favorite_outline),
-                  ],
-                ),
-              );
-            },
-          ),
+          child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('Songs').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                }
+                return GridView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 1 / 5,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20),
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Song song = Song.fromMap(data);
+                    return SongTile(song: song);
+                  }).toList(),
+                );
+              }),
         ),
       ],
     );
