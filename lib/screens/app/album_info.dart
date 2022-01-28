@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutters_of_hamelin/assets.dart';
 import 'package:flutters_of_hamelin/models/models.dart';
 
 class AlbumInfo extends StatelessWidget {
@@ -13,22 +16,51 @@ class AlbumInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text('Album'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.black,
       ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              width: 50,
-              decoration: BoxDecoration(
-                //borderRadius: const BorderRadius.all(Radius.circular(8)),
-                image: DecorationImage(
-                    image: NetworkImage(album.image), fit: BoxFit.cover),
-              ),
+              child: SizedBox(
+            height: 200,
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(album.image), fit: BoxFit.cover)),
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
+                      child: Container(
+                        decoration:
+                            BoxDecoration(color: Colors.white.withOpacity(0.0)),
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(album.name),
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(album.image),
+                                fit: BoxFit.cover)),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ),
+          )),
           const SliverPadding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             sliver: SliverToBoxAdapter(child: _SongList()),
@@ -45,6 +77,7 @@ class _SongList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 150,
       color: Colors.amber,
     );
   }
