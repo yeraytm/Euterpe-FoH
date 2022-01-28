@@ -27,16 +27,17 @@ class _AlbumCardState extends State<AlbumCard> {
         onTap: () {},
         child: Stack(
           children: [
-            CircleAvatar(
-              radius: 100,
-              backgroundImage: NetworkImage(widget.album.image),
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(widget.album.image), fit: BoxFit.cover),
+              ),
             ),
             Positioned(
-              bottom: 50,
-              left: 45,
-              right: 45,
-              child: ClipOval(
-                clipBehavior: Clip.hardEdge,
+              bottom: 7,
+              left: 7,
+              right: 7,
+              child: ClipRect(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                   child: Container(
@@ -50,8 +51,6 @@ class _AlbumCardState extends State<AlbumCard> {
                           begin: AlignmentDirectional.topStart,
                           end: AlignmentDirectional.bottomEnd,
                         ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(25)),
                       ),
                       child: Center(
                         child: Text(

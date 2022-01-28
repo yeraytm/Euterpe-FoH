@@ -16,7 +16,6 @@ class ArtistCard extends StatefulWidget {
 }
 
 class _ArtistCardState extends State<ArtistCard> {
-
   @override
   void initState() {
     super.initState();
@@ -37,8 +36,6 @@ class _ArtistCardState extends State<ArtistCard> {
               left: 45,
               right: 45,
               child: ClipOval(
-              
-                clipBehavior: Clip.hardEdge,
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                   child: Container(
