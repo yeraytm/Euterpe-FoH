@@ -7,6 +7,7 @@ import 'package:flutters_of_hamelin/models/models.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class MusicPlayerScreen extends StatefulWidget {
   const MusicPlayerScreen({Key? key, required this.song}) : super(key: key);
@@ -42,16 +43,25 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
   void initState() {
     super.initState();
     getArtist();
-    context.read<AudioPlayerCubitCubit>().openAudioPlayer(widget.song,artistName);
+    context
+        .read<AudioPlayerCubitCubit>()
+        .openAudioPlayer(widget.song, artistName);
     setState(() {
-      assetsAudioPlayer = context.read<AudioPlayerCubitCubit>().assetsAudioPlayer;
+      assetsAudioPlayer =
+          context.read<AudioPlayerCubitCubit>().assetsAudioPlayer;
     });
     _updatePaletteGenerator(widget.song.img);
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    String _printDuration(Duration duration) {
+      String twoDigits(int n) => n.toString().padLeft(2, "0");
+      String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+      String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    }
+
     return Scaffold(
       backgroundColor: _paletteGenerator?.dominantColor?.color,
       appBar: AppBar(
@@ -94,43 +104,87 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
             const SizedBox(
               height: 16,
             ),
-            SongImageCircle(imgUri: widget.song.img),
-            const SizedBox(
-              height: 16,
+            StreamBuilder(
+              stream: assetsAudioPlayer.currentPosition,
+              builder: (context, AsyncSnapshot<Duration> asyncSnapshot) {
+                if (asyncSnapshot.hasData) {
+                  final Duration duration = asyncSnapshot.data!;
+                  return PlayerBuilder.current(
+                    player: assetsAudioPlayer,
+                    builder: (context, playing) {
+                      return CircularPercentIndicator(
+                        arcType: ArcType.FULL,
+                        arcBackgroundColor: Colors.white,
+                        radius: 170,
+                        lineWidth: 5.0,
+                        percent: (duration.inSeconds /
+                            playing.audio.duration.inSeconds),
+                        center: SongImageCircle(imgUri: widget.song.img),
+                        progressColor:
+                            _paletteGenerator?.lightVibrantColor != null
+                                ? _paletteGenerator?.lightVibrantColor?.color
+                                : Colors.greenAccent,
+                        backgroundColor: Colors.white,
+                      );
+                    },
+                  );
+                } else {
+                  return SongImageCircle(imgUri: widget.song.img);
+                }
+              },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.block,
-                  color: Colors.white,
-                  size: 48,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PlayerBuilder.currentPosition(
+                        player: assetsAudioPlayer,
+                        builder: (context, duration) {
+                          return Text(
+                            ' ${_printDuration(duration)} / ',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          );
+                        }),
+                    PlayerBuilder.current(
+                        player: assetsAudioPlayer,
+                        builder: (context, playing) {
+                          return Text(_printDuration(playing.audio.duration),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16));
+                        })
+                  ],
                 ),
-                Icon(
-                  Icons.skip_previous,
-                  color: Colors.white,
-                  size: 48,
+                SizedBox(
+                  height: 8,
                 ),
                 GestureDetector(
                   onTap: () {
                     assetsAudioPlayer.playOrPause();
                   },
-                  child: CircleAvatar(
-                      radius: 36,
-                      child: assetsAudioPlayer.isPlaying.value ? Icon(Icons.pause): Icon(
-                        Icons.play_arrow,
-                        size: 48,
-                      )),
-                ),
-                Icon(
-                  Icons.skip_next,
-                  color: Colors.white,
-                  size: 48,
-                ),
-                Icon(
-                  Icons.favorite_outline,
-                  color: Colors.white,
-                  size: 48,
+                  child: PlayerBuilder.isPlaying(
+                      player: assetsAudioPlayer,
+                      builder: (cotext, isPlaying) {
+                        return CircleAvatar(
+                            radius: 36,
+                            backgroundColor:
+                                _paletteGenerator?.lightVibrantColor != null
+                                    ? _paletteGenerator
+                                        ?.lightVibrantColor?.color
+                                    : Colors.blue,
+                            child: isPlaying
+                                ? Icon(
+                                    Icons.pause,
+                                    size: 48,
+                                    color: Colors.black,
+                                  )
+                                : Icon(
+                                    Icons.play_arrow,
+                                    size: 48,
+                                    color: Colors.black,
+                                  ));
+                      }),
                 ),
               ],
             )
